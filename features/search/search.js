@@ -4,6 +4,11 @@ const urlSearch = "https://cb-back-prueba.vercel.app/search";
 const urlVideos = "https://cb-back-prueba.vercel.app/videos";
 
 
+function getThumbnailUrl(item) {
+  if (item && (item.thumbnail || item.poster)) return item.thumbnail || item.poster;
+  return "assets/images/LogocuadradoCoderBoost.png";
+}
+
 export function homeUsers() {
   const searchBtn = document.getElementById("searchbtn");
   const resultsContainer = document.getElementById("searchResults");
@@ -48,9 +53,13 @@ export function homeUsers() {
               if (!item?.url) return "";
               return `
                 <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                  <div class="card h-100 shadow-sm">
-                    <div class="ratio ratio-16x9">
-                      <video src="${item.url}" controls style="border-top-left-radius: .5rem; border-top-right-radius: .5rem;"></video>
+                  <div class="card h-100 shadow-sm border-0 overflow-hidden" style="border-radius: .5rem;">
+                    <div class="position-relative">
+                      <div class="ratio ratio-16x9">
+                        <img src="${getThumbnailUrl(item)}" loading="lazy" decoding="async" alt="${item.title || 'Video'}"
+                          style="border-top-left-radius: .5rem; border-top-right-radius: .5rem; width: 100%; height: 100%; object-fit: cover; cursor: pointer;"
+                          onclick="navigateTo('/videos'); localStorage.setItem('currentVideo', JSON.stringify({ title: '${item.title?.replace(/'/g, "\\'")}', url: '${item.url?.replace(/'/g, "\\'")}' }));" />
+                      </div>
                     </div>
                     <div class="card-body p-2">
                       <h6 class="card-title mb-0 text-truncate" title="${item.title}">${item.title}</h6>

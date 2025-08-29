@@ -3,6 +3,11 @@ import { navigate } from "../../router/router.js";
 const urlSearch = "https://cb-back-prueba.vercel.app/search";
 const urlVideos = "https://cb-back-prueba.vercel.app/videos";
 
+function getThumbnailUrl(item) {
+  if (item && (item.thumbnail || item.poster)) return item.thumbnail || item.poster;
+  return "assets/images/LogocuadradoCoderBoost.png";
+}
+
 async function loadRecentWorkshops() {
   try {
     const videos = await get(urlVideos);
@@ -26,8 +31,9 @@ async function loadRecentWorkshops() {
             <div class="card h-100 shadow-sm border-0 overflow-hidden" style="border-radius: 12px;">
               <div class="position-relative">
                 <div class="ratio ratio-16x9">
-                  <video src="${item.url}" style="border-top-left-radius: 12px; border-top-right-radius: 12px; cursor: pointer;" 
-                    onclick="navigateTo('/videos'); localStorage.setItem('currentVideo', JSON.stringify({ title: '${item.title?.replace(/'/g, "\\'")}', url: '${item.url?.replace(/'/g, "\\'")}' }));"></video>
+                  <img src="${getThumbnailUrl(item)}" loading="lazy" decoding="async" alt="${item.title || 'Video'}" 
+                    style="border-top-left-radius: 12px; border-top-right-radius: 12px; width: 100%; height: 100%; object-fit: cover; cursor: pointer;"
+                    onclick="navigateTo('/videos'); localStorage.setItem('currentVideo', JSON.stringify({ title: '${item.title?.replace(/'/g, "\\'")}', url: '${item.url?.replace(/'/g, "\\'")}' }));" />
                 </div>
                 <span class="position-absolute top-0 start-0 m-2 badge bg-success">🆕</span>
               </div>
@@ -97,8 +103,9 @@ export function homeUsers() {
                   <div class="card h-100 shadow-sm border-0 overflow-hidden" style="border-radius: 12px;">
                     <div class="position-relative">
                       <div class="ratio ratio-16x9">
-                        <video src="${item.url}" style="border-top-left-radius: 12px; border-top-right-radius: 12px; cursor: pointer;" 
-                          onclick="navigateTo('/videos'); localStorage.setItem('currentVideo', JSON.stringify({ title: '${item.title?.replace(/'/g, "\\'")}', url: '${item.url?.replace(/'/g, "\\'")}' }));"></video>
+                        <img src="${getThumbnailUrl(item)}" loading="lazy" decoding="async" alt="${item.title || 'Video'}"
+                          style="border-top-left-radius: 12px; border-top-right-radius: 12px; width: 100%; height: 100%; object-fit: cover; cursor: pointer;"
+                          onclick="navigateTo('/videos'); localStorage.setItem('currentVideo', JSON.stringify({ title: '${item.title?.replace(/'/g, "\\'")}', url: '${item.url?.replace(/'/g, "\\'")}' }));" />
                       </div>
                       <span class="position-absolute top-0 start-0 m-2 badge bg-primary">▶️</span>
                     </div>
