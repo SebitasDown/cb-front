@@ -80,6 +80,10 @@ function runPageScript(path) {
         import('../features/comments/main.js').then(module => {
           module.initComments();
         });
+        // Inicializar el chat
+        import('../features/chat/chat.js').then(module => {
+          module.initChat();
+        });
       }, 100); // Esperar a que el HTML se inserte
       break;
 
@@ -87,7 +91,7 @@ function runPageScript(path) {
       console.log('Initializing Workshop...');
       setTimeout(() => initWorkshop(), 0); // Espera a que el HTML se inserte
       break;
-z
+
     default:
       console.log('No script defined for this route.');
   }

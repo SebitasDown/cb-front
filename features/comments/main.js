@@ -98,6 +98,7 @@ export function initComments() {
 
     return div;
   }
+
   async function borrarComentario(div, id_comment) {
     if (!confirm('¿Seguro que quieres borrar este comentario?')) return;
 
@@ -183,8 +184,6 @@ export function initComments() {
       console.error(error);
     }
   }
-
-
 
   btnPublicar.addEventListener('click', agregarComentario);
 

@@ -58,7 +58,7 @@ export function homeUsers() {
                       <div class="ratio ratio-16x9">
                         <img src="${getThumbnailUrl(item)}" loading="lazy" decoding="async" alt="${item.title || 'Video'}"
                           style="border-top-left-radius: .5rem; border-top-right-radius: .5rem; width: 100%; height: 100%; object-fit: cover; cursor: pointer;"
-                          onclick="navigateTo('/videos'); localStorage.setItem('currentVideo', JSON.stringify({ title: '${item.title?.replace(/'/g, "\\'")}', url: '${item.url?.replace(/'/g, "\\'")}' }));" />
+                          onclick="navigateTo('/videos'); localStorage.setItem('currentVideo', JSON.stringify({ id_video: ${item.id_video || 1}, title: '${item.title?.replace(/'/g, "\\'")}', url: '${item.url?.replace(/'/g, "\\'")}' }));" />
                       </div>
                     </div>
                     <div class="card-body p-2">
