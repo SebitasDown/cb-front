@@ -11,8 +11,17 @@ function getThumbnailUrl(item) {
 
 export function homeUsers() {
   const searchBtn = document.getElementById("searchbtn");
+  const searchInput = document.getElementById("searchInput");
   const resultsContainer = document.getElementById("searchResults");
   const viewContainer = document.querySelector('.view-container');
+
+  // Debug: verificar que los elementos existan
+  console.log('🔍 Elementos del buscador encontrados:', {
+    searchBtn: !!searchBtn,
+    searchInput: !!searchInput,
+    resultsContainer: !!resultsContainer,
+    viewContainer: !!viewContainer
+  });
 
   function setHomeSectionsVisibility(show) {
     if (!viewContainer) return;
@@ -25,10 +34,12 @@ export function homeUsers() {
     });
   }
 
-  searchBtn.addEventListener("click", async (e) => {
+  // Función para ejecutar la búsqueda
+  async function executeSearch(e) {
+    console.log('🚀 Ejecutando búsqueda...');
     e.preventDefault();
-    const searchInput = document.getElementById("searchInput");
     const q = searchInput.value.trim();
+    console.log('🔍 Término de búsqueda:', q);
 
     // Si la consulta está vacía, restaurar el home y limpiar resultados
     if (!q) {
@@ -36,6 +47,7 @@ export function homeUsers() {
       if (resultsContainer) resultsContainer.innerHTML = "";
       return;
     }
+    
     try {
       // Ocultar el resto del home excepto la barra de búsqueda y resultados
       setHomeSectionsVisibility(false);
@@ -77,5 +89,22 @@ export function homeUsers() {
     } catch (error) {
         console.error("Error fetching search results:", error);
     }
+  }
+
+  // Event listener para el botón de búsqueda (click)
+  searchBtn.addEventListener("click", (e) => {
+    console.log('🔍 Click en botón de búsqueda');
+    executeSearch(e);
   });
+
+  // Event listener para la tecla Enter en el input
+  searchInput.addEventListener("keypress", (e) => {
+    console.log('🔍 Tecla presionada:', e.key);
+    if (e.key === 'Enter') {
+      console.log('🔍 Enter detectado, ejecutando búsqueda');
+      executeSearch(e);
+    }
+  });
+
+  console.log('✅ Event listeners del buscador registrados');
 }

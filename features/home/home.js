@@ -56,6 +56,7 @@ async function loadRecentWorkshops() {
 
 export function homeUsers() {
   const searchBtn = document.getElementById("searchbtn");
+  const searchInput = document.getElementById("searchInput");
   const resultsContainer = document.getElementById("searchResults");
   const viewContainer = document.querySelector('.view-container');
 
@@ -72,7 +73,8 @@ export function homeUsers() {
     });
   }
 
-  searchBtn.addEventListener("click", async (e) => {
+  // Función para ejecutar la búsqueda
+  async function executeSearch(e) {
     e.preventDefault();
     const searchInput = document.getElementById("searchInput");
     const q = searchInput.value.trim();
@@ -83,6 +85,7 @@ export function homeUsers() {
       if (resultsContainer) resultsContainer.innerHTML = "";
       return;
     }
+    
     try {
       // Ocultar el resto del home excepto la barra de búsqueda y resultados
       setHomeSectionsVisibility(false);
@@ -125,6 +128,16 @@ export function homeUsers() {
         : `<div class="p-2">No se encontraron resultados para "${q}"</div>`;
     } catch (error) {
         console.error("Error fetching search results:", error);
+    }
+  }
+
+  // Event listener para el botón de búsqueda (click)
+  searchBtn.addEventListener("click", executeSearch);
+
+  // Event listener para la tecla Enter en el input
+  searchInput.addEventListener("keypress", (e) => {
+    if (e.key === 'Enter') {
+      executeSearch(e);
     }
   });
 }
