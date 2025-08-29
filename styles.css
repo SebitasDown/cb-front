@@ -244,19 +244,32 @@ body {
 
 /* Reproductor de video */
 .video-container {
-    max-width: 800px;
+    width: 720px;
     margin: 0 auto;
+    border: 2px solid var(--color-gray-200);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: width 0.3s ease;
 }
 
 .video-placeholder {
-    height: 100%;
+    height: 405px; /* 720px * 9/16 = 405px para mantener 16:9 */
     width: 100%;
+    margin: 0 auto;
+}
+
+/* Estilos para el video cuando se carga */
+.video-container video {
+    display: block;
+    max-width: 100%;
+    height: auto;
 }
 
 /* Video container and comments alignment */
 .video-info-container {
-    max-width: 800px;
+    width: 720px;
     margin: 0 auto;
+    transition: width 0.3s ease;
 }
 
 .comment-header {
@@ -289,8 +302,9 @@ body {
 }
 
 .comments-section {
-    max-width: 800px;
+    width: 720px;
     margin: 0 auto;
+    transition: width 0.3s ease;
 }
 
 /* Comments: card + editor + items */

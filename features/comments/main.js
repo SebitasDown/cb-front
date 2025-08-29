@@ -1,4 +1,4 @@
-// Sistema de comentarios simple y directo
+// Sistema de comentarios optimizado y robusto
 import { getComments, createComment, updateComment, deleteComment } from './comments.js';
 
 // Variables globales
@@ -7,9 +7,31 @@ let currentUserId = null;
 let comments = [];
 let isInitialized = false;
 let lastVideoId = null;
+let isLoading = false;
+let retryCount = 0;
+const MAX_RETRIES = 3;
+const RETRY_DELAY = 1000; // 1 segundo
 
 // Función principal - se ejecuta cuando se carga la página
 export function initComments() {
+  // Esperar a que el DOM esté completamente cargado
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => initCommentsInternal());
+    return;
+  }
+  
+  // Verificar que los elementos necesarios estén disponibles
+  if (!document.getElementById('listaComentarios')) {
+    console.log('🔄 Elementos del DOM no listos, reintentando en 100ms...');
+    setTimeout(initComments, 100);
+    return;
+  }
+  
+  initCommentsInternal();
+}
+
+// Inicialización interna
+function initCommentsInternal() {
   // Obtener datos del usuario y video
   currentUserId = getCurrentUserId();
   currentVideoId = getCurrentVideoId();
@@ -29,6 +51,7 @@ export function initComments() {
     console.log(`🔄 Video cambiado de ${lastVideoId} a ${currentVideoId}, reinicializando...`);
     isInitialized = false;
     lastVideoId = currentVideoId;
+    retryCount = 0; // Reset retry count for new video
   }
   
   // Evitar inicializaciones múltiples para el mismo video
@@ -39,8 +62,8 @@ export function initComments() {
   
   console.log('🎯 Inicializando sistema de comentarios para video:', currentVideoId);
   
-  // Cargar comentarios
-  loadComments();
+  // Cargar comentarios con retry automático
+  loadCommentsWithRetry();
   
   // Configurar eventos
   setupEvents();
@@ -69,10 +92,59 @@ function getCurrentVideoId() {
   }
 }
 
+// Cargar comentarios con retry automático
+async function loadCommentsWithRetry() {
+  if (isLoading) {
+    console.log('⚠️ Ya se están cargando comentarios, saltando...');
+    return;
+  }
+  
+  isLoading = true;
+  showLoadingState(); // Mostrar indicador de carga
+  
+  // Timeout de seguridad (10 segundos)
+  const timeoutId = setTimeout(() => {
+    if (isLoading) {
+      console.error('⏰ Timeout de carga de comentarios');
+      isLoading = false;
+      showError('Timeout al cargar comentarios');
+    }
+  }, 10000);
+  
+  try {
+    await loadComments();
+    retryCount = 0; // Reset retry count on success
+    clearTimeout(timeoutId); // Limpiar timeout si fue exitoso
+  } catch (error) {
+    console.error('❌ Error cargando comentarios:', error);
+    clearTimeout(timeoutId); // Limpiar timeout en caso de error
+    
+    if (retryCount < MAX_RETRIES) {
+      retryCount++;
+      console.log(`🔄 Reintentando carga de comentarios (${retryCount}/${MAX_RETRIES}) en ${RETRY_DELAY}ms...`);
+      
+      setTimeout(() => {
+        isLoading = false;
+        loadCommentsWithRetry();
+      }, RETRY_DELAY * retryCount); // Exponential backoff
+    } else {
+      console.error('❌ Máximo de reintentos alcanzado');
+      showError('Error al cargar comentarios después de varios intentos');
+      isLoading = false;
+    }
+  }
+}
+
 // Cargar comentarios del video
 async function loadComments() {
   try {
+    console.log('📡 Cargando comentarios para video:', currentVideoId);
+    
     const response = await getComments(currentVideoId);
+    
+    if (!response || !Array.isArray(response)) {
+      throw new Error('Respuesta inválida del servidor');
+    }
     
     // Filtrar comentarios para asegurar que solo sean del video actual
     comments = response.filter(comment => {
@@ -81,18 +153,26 @@ async function loadComments() {
       return commentVideoId === currentVideoIdInt;
     });
     
+    console.log(`✅ ${comments.length} comentarios cargados exitosamente`);
+    
     renderComments();
     
   } catch (error) {
     console.error('❌ Error cargando comentarios:', error);
-    showError('Error al cargar comentarios');
+    throw error; // Re-throw para que loadCommentsWithRetry lo maneje
+  } finally {
+    isLoading = false;
   }
 }
 
 // Mostrar comentarios en el DOM
 function renderComments() {
   const listaComentarios = document.getElementById('listaComentarios');
-  if (!listaComentarios) return;
+  if (!listaComentarios) {
+    console.warn('⚠️ Elemento listaComentarios no encontrado, reintentando en 100ms...');
+    setTimeout(renderComments, 100);
+    return;
+  }
   
   listaComentarios.innerHTML = '';
   
@@ -106,10 +186,36 @@ function renderComments() {
     return;
   }
   
-  comments.forEach(comment => {
+  // Mostrar solo los primeros 3 comentarios inicialmente
+  const initialComments = comments.slice(0, 3);
+  const hasMoreComments = comments.length > 3;
+  
+  // Renderizar comentarios iniciales
+  initialComments.forEach(comment => {
     const commentElement = createCommentElement(comment);
     listaComentarios.appendChild(commentElement);
   });
+  
+  // Agregar botón "Show More" si hay más comentarios
+  if (hasMoreComments) {
+    const showMoreButton = createShowMoreButton();
+    listaComentarios.appendChild(showMoreButton);
+  }
+}
+
+// Mostrar indicador de carga
+function showLoadingState() {
+  const listaComentarios = document.getElementById('listaComentarios');
+  if (listaComentarios) {
+    listaComentarios.innerHTML = `
+      <div class="text-center text-muted py-4">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Cargando comentarios...</span>
+        </div>
+        <p class="mt-2">Cargando comentarios...</p>
+      </div>
+    `;
+  }
 }
 
 // Crear elemento HTML de un comentario
