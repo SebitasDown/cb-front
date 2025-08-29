@@ -278,12 +278,12 @@ function createCommentElement(comment) {
         </div>
         <p class="texto mb-2">${comment.comments}</p>
         ${comment.id_user == currentUserId ? `
-          <div class="comment-actions d-flex justify-content-end gap-2">
-            <button class="btn btn-primary btn-sm comment-btn" onclick="editComment(${comment.id_comment}, this)">
-              Edit
+          <div class="comment-actions">
+            <button class="btn btn-edit" onclick="editComment(${comment.id_comment}, this)" title="Editar comentario">
+              <i class="fas fa-edit"></i>
             </button>
-            <button class="btn btn-danger btn-sm comment-btn" onclick="deleteComment(${comment.id_comment}, this)">
-              Delete
+            <button class="btn btn-delete" onclick="deleteComment(${comment.id_comment}, this)" title="Eliminar comentario">
+              <i class="fas fa-trash"></i>
             </button>
           </div>
         ` : ''}
@@ -358,30 +358,18 @@ async function createNewComment() {
     return;
   }
   
-  console.log('🔍 Debug - Datos para crear comentario:', {
-    id_user: currentUserId,
-    id_video: currentVideoId,
-    comments: text
-  });
-  
   try {
-    console.log('📝 Intentando crear comentario...');
-    
     const result = await createComment({
       id_user: currentUserId,
       id_video: currentVideoId,
       comments: text
     });
     
-    console.log('✅ Resultado de createComment:', result);
-    
     // Limpiar textarea
     textarea.value = '';
     
     // Recargar comentarios
     await loadComments();
-    
-    console.log('🔄 Comentarios recargados');
     
   } catch (error) {
     console.error('❌ Error creando comentario:', error);
@@ -405,8 +393,9 @@ window.editComment = function(commentId, button) {
   textElement.parentNode.replaceChild(textarea, textElement);
   
   // Cambiar botón
-  button.textContent = 'Save';
-  button.className = 'btn btn-success btn-sm';
+  button.innerHTML = '<i class="fas fa-save"></i>';
+  button.className = 'btn btn-edit';
+  button.title = 'Guardar cambios';
   
   // Focus en textarea
   textarea.focus();
@@ -440,8 +429,9 @@ window.saveCommentEdit = async function(commentId, button, textarea, originalTex
     textarea.parentNode.replaceChild(textElement, textarea);
     
     // Restaurar botón
-    button.textContent = 'Edit';
-    button.className = 'btn btn-primary btn-sm';
+    button.innerHTML = '<i class="fas fa-edit"></i>';
+    button.className = 'btn btn-edit';
+    button.title = 'Editar comentario';
     button.onclick = () => editComment(commentId, button);
     
   } catch (error) {
@@ -457,8 +447,9 @@ window.saveCommentEdit = async function(commentId, button, textarea, originalTex
     textarea.parentNode.replaceChild(textElement, textarea);
     
     // Restaurar botón
-    button.textContent = 'Edit';
-    button.className = 'btn btn-primary btn-sm';
+    button.innerHTML = '<i class="fas fa-edit"></i>';
+    button.className = 'btn btn-edit';
+    button.title = 'Editar comentario';
     button.onclick = () => editComment(commentId, button);
   }
 };
@@ -482,7 +473,9 @@ window.deleteComment = async function(commentId, button) {
   }
 };
 
-// Mostrar error
+
+
+// Función simple para mostrar errores
 function showError(message) {
   // Solo mostrar error si realmente no hay comentarios cargados
   if (comments.length > 0) {
