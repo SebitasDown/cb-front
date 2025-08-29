@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="assets/uploadPanel.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -50,7 +51,7 @@
                 <!-- User Section - Flexbox positioned at bottom -->
                 <div>
                     <div class="d-grid gap-2">
-                        <button class="btn btn-outline-light btn-sm w-100" id="buttonupload" onclick="handleUpload()">
+                        <button class="btn btn-outline-light btn-sm w-100" id="buttonupload">
                             <i class="bi bi-upload me-1"></i>
                         </button>
                         <button class="btn btn-outline-danger btn-sm w-100" id="logout-btn" onclick="handleLogout()">
@@ -70,11 +71,63 @@
         </div>
     </div>
 
+    <!-- Video Upload Panel - Side Panel -->
+    <div id="uploadPanel" class="upload-panel">
+        <div class="upload-panel-content">
+            <div class="upload-panel-header">
+                <h4 class="mb-0">
+                    <i class="bi bi-upload me-2"></i>
+                    Upload New Video
+                </h4>
+                <button type="button" class="btn-close" id="closeUploadPanel">
+                    <span>&times;</span>
+                </button>
+            </div>
+            
+            <div class="upload-panel-body">
+                <form id="uploadVideoForm">
+                    <div class="mb-3">
+                        <label for="videoFile" class="form-label fw-bold">Video File:</label>
+                        <input type="file" class="form-control" id="videoFile" name="videoFile" accept="video/*" required>
+                        <div class="form-text">Select a video file to upload</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="title" class="form-label fw-bold">Title:</label>
+                        <input type="text" class="form-control" id="title" name="title" placeholder="Enter video title" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="category" class="form-label fw-bold">Category:</label>
+                        <select class="form-select" id="category" name="category" required>
+                            <option value="">Loading categories...</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="user" class="form-label fw-bold">Speaker (TL):</label>
+                        <select class="form-select" id="user" name="user" required>
+                            <option value="">Loading speakers...</option>
+                        </select>
+                    </div>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="bi bi-upload me-2"></i>
+                            Upload Video
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Main App -->
     <script type="module" src="main.js"></script>
-     <script type="module" src="./features/auth/login.js" defer></script>
+    <script type="module" src="./features/auth/login.js" defer></script>
+    <script type="module" src="./features/upload/uploadVideos.js" defer></script>
 </body>
 
 </html>

@@ -1,0 +1,365 @@
+/* Upload Panel Styles - Integrated Design */
+.upload-panel {
+    position: fixed;
+    top: 50%;
+    left: 80px; /* Posicionado justo al lado del sidebar (80px) */
+    transform: translateY(-50%) translateX(-100%);
+    width: 380px;
+    max-height: 85vh;
+    background: linear-gradient(135deg, #f0f3ff 0%, #d6cbff 100%);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(113, 92, 255, 0.15);
+    z-index: 1050;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 2px solid rgba(113, 92, 255, 0.1);
+    opacity: 0;
+    visibility: hidden;
+}
+
+.upload-panel.show {
+    transform: translateY(-50%) translateX(0);
+    opacity: 1;
+    visibility: visible;
+}
+
+.upload-panel-content {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    max-height: 85vh;
+}
+
+.upload-panel-header {
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%);
+    color: white;
+    padding: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    flex-shrink: 0; /* Evita que el header se encoja */
+}
+
+.upload-panel-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.1) 50%, transparent 70%);
+    animation: shimmer 3s infinite;
+}
+
+@keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+.upload-panel-header h4 {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 700;
+    position: relative;
+    z-index: 1;
+}
+
+.upload-panel-header .bi {
+    font-size: 1.3rem;
+    margin-right: 0.5rem;
+}
+
+.btn-close {
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 0.5rem;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 1;
+}
+
+.btn-close:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
+}
+
+.upload-panel-body {
+    padding: 2rem;
+    flex: 1;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    overflow-y: auto; /* Scroll vertical cuando sea necesario */
+    overflow-x: hidden; /* Sin scroll horizontal */
+    scrollbar-width: thin; /* Scrollbar delgado para Firefox */
+    scrollbar-color: rgba(113, 92, 255, 0.3) transparent; /* Color del scrollbar */
+}
+
+/* Estilos personalizados para el scrollbar (Webkit browsers) */
+.upload-panel-body::-webkit-scrollbar {
+    width: 6px;
+}
+
+.upload-panel-body::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 3px;
+}
+
+.upload-panel-body::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, var(--color-accent), var(--color-pink));
+    border-radius: 3px;
+    transition: all 0.3s ease;
+}
+
+.upload-panel-body::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, var(--color-pink), var(--color-accent));
+}
+
+.upload-panel-body .form-label {
+    color: var(--color-primary);
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.upload-panel-body .form-label::before {
+    content: '';
+    width: 4px;
+    height: 16px;
+    background: linear-gradient(135deg, var(--color-accent), var(--color-pink));
+    border-radius: 2px;
+}
+
+.upload-panel-body .form-control,
+.upload-panel-body .form-select {
+    border: 2px solid rgba(113, 92, 255, 0.2);
+    border-radius: 12px;
+    padding: 1rem;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+}
+
+.upload-panel-body .form-control:focus,
+.upload-panel-body .form-select:focus {
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 4px rgba(113, 92, 255, 0.15);
+    transform: translateY(-2px);
+    background: white;
+}
+
+.upload-panel-body .form-text {
+    font-size: 0.85rem;
+    color: var(--color-gray-600);
+    margin-top: 0.5rem;
+    font-style: italic;
+}
+
+.upload-panel-body .btn-primary {
+    background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-pink) 100%);
+    border: none;
+    border-radius: 12px;
+    padding: 1rem 1.5rem;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.upload-panel-body .btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    transition: left 0.5s;
+}
+
+.upload-panel-body .btn-primary:hover::before {
+    left: 100%;
+}
+
+.upload-panel-body .btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(113, 92, 255, 0.4);
+}
+
+.upload-panel-body .btn-primary:active {
+    transform: translateY(-1px);
+}
+
+/* File input styling */
+.upload-panel-body .form-control[type="file"] {
+    padding: 0.75rem;
+    background: linear-gradient(135deg, rgba(113, 92, 255, 0.1), rgba(234, 162, 252, 0.1));
+    border: 2px dashed rgba(113, 92, 255, 0.3);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.upload-panel-body .form-control[type="file"]:hover {
+    border-color: var(--color-accent);
+    background: linear-gradient(135deg, rgba(113, 92, 255, 0.15), rgba(234, 162, 252, 0.15));
+}
+
+/* Select styling */
+.upload-panel-body .form-select {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23715CFF' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+    background-size: 1.2rem;
+    background-position: right 1rem center;
+    background-repeat: no-repeat;
+    padding-right: 3rem;
+}
+
+/* Success state */
+.upload-panel.success .upload-panel-header {
+    background: linear-gradient(135deg, var(--color-green) 0%, #4ade80 100%);
+}
+
+.upload-panel.success {
+    animation: successBounce 0.6s ease-out;
+}
+
+@keyframes successBounce {
+    0%, 20%, 50%, 80%, 100% { transform: translateY(-50%) translateX(0); }
+    40% { transform: translateY(-50%) translateX(0) scale(1.05); }
+    60% { transform: translateY(-50%) translateX(0) scale(0.98); }
+}
+
+/* Loading state */
+.upload-panel-body .btn-primary:disabled {
+    background: linear-gradient(135deg, var(--color-gray-400), var(--color-gray-500));
+    cursor: not-allowed;
+    transform: none;
+}
+
+.upload-panel-body .btn-primary:disabled::before {
+    display: none;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .upload-panel {
+        left: 80px;
+        width: 350px;
+        max-height: 80vh;
+    }
+}
+
+@media (max-width: 992px) {
+    .upload-panel {
+        left: 80px;
+        width: 320px;
+        max-height: 75vh;
+    }
+    
+    .upload-panel-body {
+        padding: 1.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .upload-panel {
+        position: fixed;
+        top: auto;
+        bottom: 80px;
+        right: 20px;
+        left: 20px;
+        width: auto;
+        max-height: 70vh;
+        transform: translateY(100%);
+    }
+    
+    .upload-panel.show {
+        transform: translateY(0);
+    }
+    
+    .upload-panel-header {
+        padding: 1rem;
+    }
+    
+    .upload-panel-body {
+        padding: 1rem;
+        max-height: calc(70vh - 80px); /* Restar altura del header */
+    }
+}
+
+@media (max-width: 576px) {
+    .upload-panel {
+        bottom: 70px;
+        right: 10px;
+        left: 10px;
+        max-height: 75vh;
+    }
+    
+    .upload-panel-header {
+        padding: 0.75rem;
+    }
+    
+    .upload-panel-body {
+        padding: 0.75rem;
+        max-height: calc(75vh - 70px); /* Restar altura del header */
+    }
+}
+
+/* Animation for form elements */
+.upload-panel-body .form-control,
+.upload-panel-body .form-select {
+    animation: slideInUp 0.4s ease-out;
+    animation-fill-mode: both;
+}
+
+.upload-panel-body .form-control:nth-child(1) { animation-delay: 0.1s; }
+.upload-panel-body .form-control:nth-child(2) { animation-delay: 0.2s; }
+.upload-panel-body .form-select:nth-child(3) { animation-delay: 0.3s; }
+.upload-panel-body .form-select:nth-child(4) { animation-delay: 0.4s; }
+.upload-panel-body .btn-primary { animation-delay: 0.5s; }
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Floating action button effect */
+.upload-panel::after {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, var(--color-accent), var(--color-pink), var(--color-accent));
+    border-radius: 22px;
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.upload-panel.show::after {
+    opacity: 0.3;
+}
