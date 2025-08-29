@@ -1,196 +1,333 @@
+// Sistema de comentarios simple y directo
 import { getComments, createComment, updateComment, deleteComment } from './comments.js';
 
-// Usuario y video reales desde localStorage
-const currentUserId = JSON.parse(localStorage.getItem("user"))?.id_user;
-const currentVideoId = 1; // Por ahora hardcodeado, se puede hacer dinámico después
-
-// Bandera para evitar inicializaciones múltiples
+// Variables globales
+let currentVideoId = null;
+let currentUserId = null;
+let comments = [];
 let isInitialized = false;
 
+// Función principal - se ejecuta cuando se carga la página
 export function initComments() {
   // Evitar inicializaciones múltiples
   if (isInitialized) {
     console.log('⚠️ Sistema de comentarios ya inicializado, saltando...');
     return;
   }
-
-  // Verificar que el usuario esté logueado
+  
+  // Obtener datos del usuario y video
+  currentUserId = getCurrentUserId();
+  currentVideoId = getCurrentVideoId();
+  
   if (!currentUserId) {
-    console.error('Usuario no logueado, no se pueden cargar comentarios');
+    console.error('❌ Usuario no logueado');
     return;
   }
-
-  console.log('Usuario logueado con ID:', currentUserId);
-
-  // Referencias a los elementos del DOM dentro de videoplayer.html, ya cargados
-  const listaComentarios = document.getElementById('listaComentarios');
-  const textareaComentario = document.getElementById('nuevoComentario');
-  const btnPublicar = document.getElementById('btnPublicar');
-
-  if (!listaComentarios || !textareaComentario || !btnPublicar) {
-    console.error('Elementos de comentarios no encontrados en el DOM');
+  
+  if (!currentVideoId) {
+    console.error('❌ No hay video seleccionado');
     return;
   }
-
-  // Botón siempre visible; el input es el protagonista visual
-
-  async function cargarComentarios() {
-    try {
-      const comentarios = await getComments(currentVideoId);
-      listaComentarios.innerHTML = '';
-      comentarios.forEach(({ id_comment, id_user, nickname, comments }) => {
-        const div = crearComentarioElement(id_comment, id_user, nickname, comments);
-        listaComentarios.appendChild(div);
-      });
-    } catch (error) {
-      console.error('Error cargando comentarios:', error);
-    }
-  }
-
-  function crearComentarioElement(id_comment, id_user, nickname, comments) {
-    const div = document.createElement('div');
-    div.className = 'comentario';
-
-    // Header con avatar (inicial) + nickname
-    const header = document.createElement('div');
-    header.className = 'comment-header';
-
-    const avatar = document.createElement('span');
-    avatar.className = 'avatar-initials';
-    const firstLetter = (nickname || '?').trim().charAt(0).toUpperCase();
-    avatar.textContent = firstLetter || '?';
-
-    const nombreElem = document.createElement('span');
-    nombreElem.className = 'nombre';
-    nombreElem.textContent = nickname || 'User';
-
-    header.appendChild(avatar);
-    header.appendChild(nombreElem);
-
-    const textoElem = document.createElement('div');
-    textoElem.className = 'texto';
-    textoElem.textContent = comments;
-
-    // Botonera (solo visible para el autor)
-    const botonesDiv = document.createElement('div');
-    botonesDiv.className = 'botonesComentario d-flex gap-2 mt-2 justify-content-end';
-
-    const btnEditar = document.createElement('button');
-    btnEditar.textContent = 'Edit';
-    btnEditar.className = 'btn btn-primary btn-sm';
-
-    const btnBorrar = document.createElement('button');
-    btnBorrar.textContent = 'Delete';
-    btnBorrar.className = 'btn btn-primary btn-sm';
-
-    if (id_user === currentUserId) {
-      btnEditar.onclick = () => editarComentario(div, id_comment, textoElem, btnEditar);
-      btnBorrar.onclick = () => borrarComentario(div, id_comment);
-      botonesDiv.appendChild(btnEditar);
-      botonesDiv.appendChild(btnBorrar);
-    }
-
-    div.appendChild(header);
-    div.appendChild(textoElem);
-    if (id_user === currentUserId) {
-      div.appendChild(botonesDiv);
-    }
-
-    return div;
-  }
-
-  async function borrarComentario(div, id_comment) {
-    if (!confirm('¿Seguro que quieres borrar este comentario?')) return;
-
-    try {
-      const result = await deleteComment(id_comment, currentUserId);
-      if (result) {
-        div.remove();
-      } else {
-        alert('No se pudo borrar el comentario');
-      }
-    } catch (error) {
-      alert('Error al borrar comentario');
-      console.error(error);
-    }
-  }
-
-  function editarComentario(div, id_comment, textoElem, btnEditar) {
-    if (btnEditar.textContent === 'Edit') {
-      const inputTextoEdit = document.createElement('textarea');
-      inputTextoEdit.value = textoElem.textContent;
-      inputTextoEdit.style.width = '100%';
-      inputTextoEdit.style.marginTop = '5px';
-
-      div.replaceChild(inputTextoEdit, textoElem);
-      btnEditar.textContent = 'Save';
-
-      btnEditar.onclick = async () => {
-        const nuevoTexto = inputTextoEdit.value.trim();
-        if (!nuevoTexto) {
-          alert('El comentario no puede estar vacío');
-          return;
-        }
-
-        try {
-          console.log('🔍 Frontend - Enviando UPDATE:', {
-            id_comment,
-            id_user: currentUserId,
-            comments: nuevoTexto
-          });
-          
-          await updateComment(id_comment, {
-            id_user: currentUserId,
-            comments: nuevoTexto,
-          });
-
-          textoElem.textContent = nuevoTexto;
-          div.replaceChild(textoElem, inputTextoEdit);
-          btnEditar.textContent = 'Edit';
-          btnEditar.onclick = () => editarComentario(div, id_comment, textoElem, btnEditar);
-        } catch (error) {
-          alert('Error al guardar comentario');
-          console.error(error);
-        }
-      };
-    }
-  }
-
-  async function agregarComentario() {
-    const comments = textareaComentario.value.trim();
-    if (!comments) {
-      alert('El comentario no puede estar vacío');
-      return;
-    }
-
-    try {
-      const nuevoComentario = await createComment({
-        id_user: currentUserId,
-        id_video: currentVideoId,
-        comments,
-      });
-
-      const div = crearComentarioElement(
-        nuevoComentario.id_comment,
-        nuevoComentario.id_user,
-        nuevoComentario.nickname,
-        nuevoComentario.comments
-      );
-
-      listaComentarios.prepend(div);
-      textareaComentario.value = '';
-    } catch (error) {
-      alert('Error al agregar comentario');
-      console.error(error);
-    }
-  }
-
-  btnPublicar.addEventListener('click', agregarComentario);
-
-  // Carga inicial de comentarios
-  cargarComentarios();
-
-  // Marcar como inicializado para evitar duplicados
+  
+  // Cargar comentarios
+  loadComments();
+  
+  // Configurar eventos
+  setupEvents();
+  
+  // Marcar como inicializado
   isInitialized = true;
-  console.log('✅ Sistema de comentarios inicializado completamente');
+}
+
+// Obtener ID del usuario
+function getCurrentUserId() {
+  try {
+    const user = JSON.parse(localStorage.getItem('user'));
+    return user?.id_user;
+  } catch (error) {
+    return null;
+  }
+}
+
+// Obtener ID del video
+function getCurrentVideoId() {
+  try {
+    const video = JSON.parse(localStorage.getItem('currentVideo'));
+    return video?.id_video;
+  } catch (error) {
+    return null;
+  }
+}
+
+// Cargar comentarios del video
+async function loadComments() {
+  try {
+    const response = await getComments(currentVideoId);
+    
+    // Filtrar comentarios para asegurar que solo sean del video actual
+    comments = response.filter(comment => {
+      const commentVideoId = parseInt(comment.id_video);
+      const currentVideoIdInt = parseInt(currentVideoId);
+      return commentVideoId === currentVideoIdInt;
+    });
+    
+    renderComments();
+    
+  } catch (error) {
+    console.error('❌ Error cargando comentarios:', error);
+    showError('Error al cargar comentarios');
+  }
+}
+
+// Mostrar comentarios en el DOM
+function renderComments() {
+  const listaComentarios = document.getElementById('listaComentarios');
+  if (!listaComentarios) return;
+  
+  listaComentarios.innerHTML = '';
+  
+  if (comments.length === 0) {
+    listaComentarios.innerHTML = `
+      <div class="text-center text-muted py-4">
+        <i class="bi bi-chat-dots display-4"></i>
+        <p class="mt-2">No hay comentarios para este video</p>
+      </div>
+    `;
+    return;
+  }
+  
+  comments.forEach(comment => {
+    const commentElement = createCommentElement(comment);
+    listaComentarios.appendChild(commentElement);
+  });
+}
+
+// Crear elemento HTML de un comentario
+function createCommentElement(comment) {
+  const div = document.createElement('div');
+  div.className = 'comentario border-bottom pb-3 mb-3';
+  div.innerHTML = `
+    <div class="d-flex align-items-start gap-3">
+      <div class="flex-shrink-0">
+        <div class="avatar bg-primary rounded-circle d-flex align-items-center justify-content-center text-white" style="width: 40px; height: 40px;">
+          ${comment.nickname ? comment.nickname.charAt(0).toUpperCase() : 'U'}
+        </div>
+      </div>
+      <div class="flex-grow-1">
+        <div class="d-flex align-items-center gap-2 mb-1">
+          <strong class="nombre">${comment.nickname || 'Usuario'}</strong>
+          <small class="text-muted">${formatDate(comment.timestamp || comment.comment_date || comment.created_at)}</small>
+        </div>
+        <p class="texto mb-2">${comment.comments}</p>
+        ${comment.id_user == currentUserId ? `
+          <div class="comment-actions d-flex justify-content-end gap-2">
+            <button class="btn btn-primary btn-sm comment-btn" onclick="editComment(${comment.id_comment}, this)">
+              Edit
+            </button>
+            <button class="btn btn-danger btn-sm comment-btn" onclick="deleteComment(${comment.id_comment}, this)">
+              Delete
+            </button>
+          </div>
+        ` : ''}
+      </div>
+    </div>
+  `;
+  
+  return div;
+}
+
+// Formatear fecha
+function formatDate(dateString) {
+  if (!dateString) {
+    return 'Fecha no disponible';
+  }
+  
+  try {
+    const date = new Date(dateString);
+    
+    if (isNaN(date.getTime())) {
+      return 'Fecha inválida';
+    }
+    
+    return date.toLocaleDateString('es-ES', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+    
+  } catch (error) {
+    return 'Error en fecha';
+  }
+}
+
+// Configurar eventos
+function setupEvents() {
+  const btnPublicar = document.getElementById('btnPublicar');
+  const textarea = document.getElementById('nuevoComentario');
+  
+  if (btnPublicar) {
+    // Remover listeners anteriores si existen
+    btnPublicar.removeEventListener('click', createNewComment);
+    // Agregar nuevo listener
+    btnPublicar.addEventListener('click', createNewComment);
+  }
+  
+  if (textarea) {
+    // Remover listeners anteriores si existen
+    textarea.removeEventListener('keypress', handleKeyPress);
+    // Agregar nuevo listener
+    textarea.addEventListener('keypress', handleKeyPress);
+  }
+}
+
+// Manejador de tecla Enter
+function handleKeyPress(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    createNewComment();
+  }
+}
+
+// Crear nuevo comentario
+async function createNewComment() {
+  const textarea = document.getElementById('nuevoComentario');
+  const text = textarea.value.trim();
+  
+  if (!text) {
+    showError('El comentario no puede estar vacío');
+    return;
+  }
+  
+  try {
+    await createComment({
+      id_user: currentUserId,
+      id_video: currentVideoId,
+      comments: text
+    });
+    
+    // Limpiar textarea
+    textarea.value = '';
+    
+    // Recargar comentarios
+    await loadComments();
+    
+  } catch (error) {
+    console.error('❌ Error creando comentario:', error);
+    showError('Error al crear comentario');
+  }
+}
+
+// Editar comentario (función global)
+window.editComment = function(commentId, button) {
+  const commentDiv = button.closest('.comentario');
+  const textElement = commentDiv.querySelector('.texto');
+  const currentText = textElement.textContent;
+  
+  // Crear textarea
+  const textarea = document.createElement('textarea');
+  textarea.value = currentText;
+  textarea.className = 'form-control mt-2';
+  textarea.rows = 2;
+  
+  // Reemplazar texto con textarea
+  textElement.parentNode.replaceChild(textarea, textElement);
+  
+  // Cambiar botón
+  button.textContent = 'Save';
+  button.className = 'btn btn-success btn-sm';
+  
+  // Focus en textarea
+  textarea.focus();
+  textarea.select();
+  
+  // Cambiar onclick
+  button.onclick = () => saveCommentEdit(commentId, button, textarea, currentText);
+};
+
+// Guardar edición (función global)
+window.saveCommentEdit = async function(commentId, button, textarea, originalText) {
+  const newText = textarea.value.trim();
+  
+  if (!newText) {
+    showError('El comentario no puede estar vacío');
+    return;
+  }
+  
+  try {
+    await updateComment(commentId, {
+      id_user: currentUserId,
+      comments: newText
+    });
+    
+    // Restaurar texto
+    const commentDiv = button.closest('.comentario');
+    const textElement = document.createElement('p');
+    textElement.className = 'texto mb-2';
+    textElement.textContent = newText;
+    
+    textarea.parentNode.replaceChild(textElement, textarea);
+    
+    // Restaurar botón
+    button.textContent = 'Edit';
+    button.className = 'btn btn-primary btn-sm';
+    button.onclick = () => editComment(commentId, button);
+    
+  } catch (error) {
+    console.error('❌ Error editando comentario:', error);
+    showError('Error al editar comentario');
+    
+    // Restaurar texto original
+    const commentDiv = button.closest('.comentario');
+    const textElement = document.createElement('p');
+    textElement.className = 'texto mb-2';
+    textElement.textContent = originalText;
+    
+    textarea.parentNode.replaceChild(textElement, textarea);
+    
+    // Restaurar botón
+    button.textContent = 'Edit';
+    button.className = 'btn btn-primary btn-sm';
+    button.onclick = () => editComment(commentId, button);
+  }
+};
+
+// Eliminar comentario (función global)
+window.deleteComment = async function(commentId, button) {
+  if (!confirm('¿Seguro que quieres eliminar este comentario?')) {
+    return;
+  }
+  
+  try {
+    await deleteComment(commentId);
+    
+    // Remover del DOM
+    const commentDiv = button.closest('.comentario');
+    commentDiv.remove();
+    
+  } catch (error) {
+    console.error('❌ Error eliminando comentario:', error);
+    showError('Error al eliminar comentario');
+  }
+};
+
+// Mostrar error
+function showError(message) {
+  const toast = document.createElement('div');
+  toast.className = 'alert alert-danger alert-dismissible fade show position-fixed';
+  toast.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+  toast.innerHTML = `
+    <i class="bi bi-exclamation-triangle"></i>
+    ${message}
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+  `;
+
+  document.body.appendChild(toast);
+
+  setTimeout(() => {
+    if (toast.parentNode) {
+      toast.remove();
+    }
+  }, 5000);
 }

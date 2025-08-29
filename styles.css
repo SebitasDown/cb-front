@@ -824,3 +824,61 @@ body {
 .bot-msg br {
   margin: 5px 0;
 }
+
+/* Estilos para botones de comentarios */
+.comment-actions {
+    margin-top: 0.5rem;
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+}
+
+/* Estilos específicos para botones Edit y Delete */
+.comment-actions .comment-btn {
+    width: 15% !important;
+    min-width: 60px;
+    height: 32px !important;
+    font-size: 0.875rem;
+    padding: 0.375rem 0.75rem !important;
+    border-radius: 0.375rem !important;
+    transition: all 0.2s ease-in-out;
+    white-space: nowrap;
+    text-align: center;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+/* Hover effects para botones de comentarios */
+.comment-actions .comment-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Asegurar que el botón Post tenga el mismo tamaño */
+#btnPublicar {
+    width: 15% !important;
+    min-width: 60px;
+    height: 32px !important;
+    font-size: 0.875rem;
+    padding: 0.375rem 0.75rem !important;
+    border-radius: 0.375rem !important;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+/* Override de Bootstrap para asegurar estilos */
+.comment-actions .btn.btn-sm {
+    width: 15% !important;
+    min-width: 60px;
+    height: 32px !important;
+    padding: 0.375rem 0.75rem !important;
+    border-radius: 0.375rem !important;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+}
