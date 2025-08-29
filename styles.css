@@ -733,12 +733,89 @@ body {
     min-height: calc(100vh - 2rem);
 }
 
-/* Video Chat Layout */
-.video-chat-layout {
-    display: flex;
-    gap: 2rem;
-    align-items: flex-start;
+/* CSS FINAL PARA ELIMINAR CUALQUIER SUPERPOSICIÓN */
+@media (max-width: 1200px) {
+    /* RESET COMPLETO DEL LAYOUT */
+    .video-chat-layout {
+        display: block !important;
+        flex-direction: unset !important;
+        flex-wrap: unset !important;
+        gap: 0 !important;
+        align-items: unset !important;
+        justify-content: unset !important;
+        position: static !important;
+        top: auto !important;
+        left: auto !important;
+        right: auto !important;
+        bottom: auto !important;
+        z-index: 1 !important;
+        transform: none !important;
+        float: none !important;
+        clear: both !important;
+    }
+    
+    /* RESET COMPLETO DEL VIDEO */
+    .video-content {
+        display: block !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        margin-bottom: 2rem !important;
+        float: none !important;
+        clear: both !important;
+        position: static !important;
+        top: auto !important;
+        left: auto !important;
+        right: auto !important;
+        bottom: auto !important;
+        z-index: 1 !important;
+        transform: none !important;
+    }
+    
+    /* RESET COMPLETO DEL CHAT */
+    .chat-space {
+        display: block !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        position: static !important;
+        top: auto !important;
+        left: auto !important;
+        right: auto !important;
+        bottom: auto !important;
+        z-index: 1 !important;
+        transform: none !important;
+        float: none !important;
+        clear: both !important;
+        flex: none !important;
+        order: unset !important;
+    }
+    
+    /* RESET COMPLETO DE TODOS LOS ELEMENTOS DEL CHAT */
+    .chat-space *,
+    .chat-placeholder,
+    .chat-placeholder *,
+    #messages,
+    #messages *,
+    #form,
+    #form *,
+    #input,
+    #send-btn {
+        position: static !important;
+        top: auto !important;
+        left: auto !important;
+        right: auto !important;
+        bottom: auto !important;
+        z-index: 1 !important;
+        transform: none !important;
+        float: none !important;
+        clear: both !important;
+    }
 }
+
+
+
+
+
+
 
 .video-content {
     flex: 1;
@@ -756,6 +833,7 @@ body {
     height: 650px;
     overflow-y: auto;
     font-family: "Inter", sans-serif;
+    scroll-behavior: smooth;
 }
   
   /* Mensaje del usuario */
@@ -820,11 +898,29 @@ body {
     font-size: 1.2rem;
   }
 
+/* DEFINICIÓN ÚNICA Y LIMPIA DEL CHAT */
 .chat-space {
     width: 500px;
     flex-shrink: 0;
     position: sticky;
     top: 2rem;
+    z-index: 10;
+}
+
+/* SOLUCIÓN DEFINITIVA PARA DISPOSITIVOS PEQUEÑOS */
+@media (max-width: 1200px) {
+    .chat-space {
+        width: 100% !important;
+        position: static !important;
+        top: auto !important;
+        left: auto !important;
+        right: auto !important;
+        bottom: auto !important;
+        z-index: 1 !important;
+        transform: none !important;
+        float: none !important;
+        clear: both !important;
+    }
 }
 
 .chat-placeholder {
@@ -836,40 +932,55 @@ body {
     padding: 1.5rem !important;
 }
 
-/* Responsive adjustments for video-chat layout */
-@media (max-width: 1200px) {
-    .chat-space {
-        width: 450px;
-    }
-}
+
 
 @media (max-width: 992px) {
-    .video-chat-layout {
-        flex-direction: column;
-        gap: 1.5rem;
-    }
-    
-    .chat-space {
-        width: 100%;
-        position: static;
-    }
-    
     .chat-placeholder {
         min-height: 600px;
+        max-height: 600px;
+    }
+    
+    #messages {
+        height: 450px;
+        max-height: 450px;
     }
 }
 
 @media (max-width: 768px) {
-    .video-chat-layout {
-        gap: 1rem;
-    }
-    
-    .chat-space {
+    /* Ajustar el video container para móvil */
+    .video-container {
         width: 100%;
+        max-width: 100%;
     }
     
-    .chat-placeholder {
-        min-height: 500px;
+    .video-info-container {
+        width: 100%;
+        max-width: 100%;
+    }
+    
+    .comments-section {
+        width: 100%;
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 576px) {
+    /* Hacer los mensajes más compactos en móvil */
+    .user-msg, .bot-msg {
+        font-size: 0.9rem;
+        padding: 8px 12px;
+        margin: 6px 0;
+    }
+    
+    /* Ajustar el input para móvil */
+    #input {
+        font-size: 16px; /* Evita zoom en iOS */
+        padding: 10px 14px;
+    }
+    
+    #send-btn {
+        width: 40px;
+        height: 40px;
     }
 }
 .login-fullscreen {
@@ -1097,4 +1208,117 @@ body {
     display: flex !important;
     align-items: center;
     justify-content: center;
+}
+
+/* ======================================== */
+/* SOLUCIÓN DEFINITIVA PARA EL CHAT */
+/* ======================================== */
+
+/* Layout horizontal para desktop */
+@media (min-width: 1401px) {
+    .video-chat-layout {
+        display: flex;
+        gap: 2rem;
+        align-items: flex-start;
+    }
+    
+    .chat-space {
+        width: 500px;
+        flex-shrink: 0;
+        position: sticky;
+        top: 2rem;
+        z-index: 10;
+    }
+}
+
+/* Layout vertical para tablets y móviles */
+@media (max-width: 1400px) {
+    .video-chat-layout {
+        display: block !important;
+    }
+    
+    .video-content {
+        display: block !important;
+        width: 100% !important;
+        margin-bottom: 2rem !important;
+    }
+    
+    .chat-space {
+        display: block !important;
+        width: 100% !important;
+        position: static !important;
+        top: auto !important;
+        left: auto !important;
+        right: auto !important;
+        bottom: auto !important;
+        z-index: 1 !important;
+        transform: none !important;
+        float: none !important;
+        clear: both !important;
+    }
+    
+    .chat-placeholder {
+        min-height: 500px;
+        max-height: 500px;
+        overflow: hidden;
+    }
+    
+    #messages {
+        height: 350px;
+        max-height: 350px;
+    }
+}
+
+/* CSS específico para pantallas medianas (1200px - 1400px) */
+@media (min-width: 1200px) and (max-width: 1400px) {
+    .video-chat-layout {
+        display: block !important;
+        flex-direction: unset !important;
+        gap: 0 !important;
+    }
+    
+    .video-content {
+        display: block !important;
+        width: 100% !important;
+        margin-bottom: 2rem !important;
+    }
+    
+    .chat-space {
+        display: block !important;
+        width: 100% !important;
+        position: static !important;
+        top: auto !important;
+        left: auto !important;
+        right: auto !important;
+        bottom: auto !important;
+        z-index: 1 !important;
+        transform: none !important;
+        float: none !important;
+        clear: both !important;
+    }
+}
+
+/* Ajustes específicos para móviles */
+@media (max-width: 768px) {
+    .chat-placeholder {
+        min-height: 400px;
+        max-height: 400px;
+    }
+    
+    #messages {
+        height: 300px;
+        max-height: 300px;
+    }
+}
+
+@media (max-width: 576px) {
+    .chat-placeholder {
+        min-height: 350px;
+        max-height: 350px;
+    }
+    
+    #messages {
+        height: 250px;
+        max-height: 250px;
+    }
 }
