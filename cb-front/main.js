@@ -1,1 +1,0 @@
-import { navigate } from "./router/router.js"; document.addEventListener("DOMContentLoaded", function() { navigate("/"); });
