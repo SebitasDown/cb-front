@@ -9,8 +9,8 @@ let isInitialized = false;
 let lastVideoId = null;
 let isLoading = false;
 let retryCount = 0;
-const MAX_RETRIES = 3;
-const RETRY_DELAY = 1000; // 1 segundo
+const MAX_RETRIES = 2; // Reducido de 3 a 2
+const RETRY_DELAY = 2000; // Aumentado a 2 segundos para ser menos agresivo
 
 // Función principal - se ejecuta cuando se carga la página
 export function initComments() {
@@ -100,37 +100,54 @@ async function loadCommentsWithRetry() {
   }
   
   isLoading = true;
-  showLoadingState(); // Mostrar indicador de carga
   
-  // Timeout de seguridad (10 segundos)
+  // Solo mostrar loading state en el primer intento
+  if (retryCount === 0) {
+    showLoadingState();
+  }
+  
+  // Timeout de seguridad (15 segundos) - más largo para evitar falsos positivos
   const timeoutId = setTimeout(() => {
     if (isLoading) {
       console.error('⏰ Timeout de carga de comentarios');
       isLoading = false;
-      showError('Timeout al cargar comentarios');
+      // Solo mostrar error si realmente no se pudieron cargar comentarios
+      if (comments.length === 0) {
+        showError('Timeout al cargar comentarios');
+      }
     }
-  }, 10000);
+  }, 15000);
   
   try {
     await loadComments();
     retryCount = 0; // Reset retry count on success
     clearTimeout(timeoutId); // Limpiar timeout si fue exitoso
+    console.log('✅ Comentarios cargados exitosamente');
   } catch (error) {
     console.error('❌ Error cargando comentarios:', error);
     clearTimeout(timeoutId); // Limpiar timeout en caso de error
     
-    if (retryCount < MAX_RETRIES) {
+    if (retryCount < MAX_RETRIES && isNetworkError(error)) {
       retryCount++;
       console.log(`🔄 Reintentando carga de comentarios (${retryCount}/${MAX_RETRIES}) en ${RETRY_DELAY}ms...`);
       
+      // No mostrar loading state en retries, solo en consola
       setTimeout(() => {
         isLoading = false;
         loadCommentsWithRetry();
-      }, RETRY_DELAY * retryCount); // Exponential backoff
+      }, RETRY_DELAY); // Delay fijo, no exponencial
     } else {
-      console.error('❌ Máximo de reintentos alcanzado');
-      showError('Error al cargar comentarios después de varios intentos');
+      console.error('❌ Error no recuperable o máximo de reintentos alcanzado');
+      // Solo mostrar error si realmente no se pudieron cargar comentarios
+      if (comments.length === 0) {
+        showError('Error al cargar comentarios');
+      }
       isLoading = false;
+      
+      // Mostrar mensaje de "sin comentarios" si no se pudieron cargar
+      if (comments.length === 0) {
+        showNoCommentsMessage();
+      }
     }
   }
 }
@@ -213,6 +230,31 @@ function showLoadingState() {
           <span class="visually-hidden">Cargando comentarios...</span>
         </div>
         <p class="mt-2">Cargando comentarios...</p>
+      </div>
+    `;
+  }
+}
+
+// Detectar si un error es de red (recuperable)
+function isNetworkError(error) {
+  // Errores de red que vale la pena reintentar
+  return error.name === 'TypeError' || // Network error
+         error.message.includes('fetch') || // Fetch error
+         error.message.includes('network') || // Network error
+         error.message.includes('timeout'); // Timeout
+}
+
+// Mostrar mensaje cuando no hay comentarios (por error o porque realmente no hay)
+function showNoCommentsMessage() {
+  const listaComentarios = document.getElementById('listaComentarios');
+  if (listaComentarios) {
+    listaComentarios.innerHTML = `
+      <div class="text-center text-muted py-4">
+        <i class="bi bi-exclamation-triangle text-warning display-4"></i>
+        <p class="mt-2">No se pudieron cargar los comentarios</p>
+        <button class="btn btn-outline-primary btn-sm mt-2" onclick="retryLoadComments()">
+          <i class="bi bi-arrow-clockwise me-1"></i>Reintentar
+        </button>
       </div>
     `;
   }
@@ -442,6 +484,12 @@ window.deleteComment = async function(commentId, button) {
 
 // Mostrar error
 function showError(message) {
+  // Solo mostrar error si realmente no hay comentarios cargados
+  if (comments.length > 0) {
+    console.log('⚠️ No se muestra error porque ya hay comentarios cargados');
+    return;
+  }
+  
   const toast = document.createElement('div');
   toast.className = 'alert alert-danger alert-dismissible fade show position-fixed';
   toast.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
@@ -467,3 +515,11 @@ export function resetCommentsSystem() {
   comments = [];
   console.log('🔄 Sistema de comentarios reseteado');
 }
+
+// Función global para reintentar carga manualmente
+window.retryLoadComments = function() {
+  console.log('🔄 Reintentando carga manual de comentarios...');
+  retryCount = 0;
+  isInitialized = false;
+  initComments();
+};
