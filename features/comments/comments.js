@@ -10,8 +10,16 @@ export async function getComments(id_video) {
 
 // Crear un nuevo comentario
 export async function createComment({ id_user, id_video, comments }) {
+  console.log('🔍 createComment llamado con:', { id_user, id_video, comments });
+  
   const body = { id_user, id_video, comments };
-  return await post(BASE_URL, body);
+  console.log('📤 Enviando POST a:', BASE_URL);
+  console.log('📤 Body:', body);
+  
+  const result = await post(BASE_URL, body);
+  console.log('📥 Respuesta del POST:', result);
+  
+  return result;
 }
 
 // Editar comentario existente

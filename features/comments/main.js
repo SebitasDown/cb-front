@@ -6,15 +6,10 @@ let currentVideoId = null;
 let currentUserId = null;
 let comments = [];
 let isInitialized = false;
+let lastVideoId = null;
 
 // Función principal - se ejecuta cuando se carga la página
 export function initComments() {
-  // Evitar inicializaciones múltiples
-  if (isInitialized) {
-    console.log('⚠️ Sistema de comentarios ya inicializado, saltando...');
-    return;
-  }
-  
   // Obtener datos del usuario y video
   currentUserId = getCurrentUserId();
   currentVideoId = getCurrentVideoId();
@@ -29,13 +24,28 @@ export function initComments() {
     return;
   }
   
+  // Verificar si cambió el video
+  if (lastVideoId !== currentVideoId) {
+    console.log(`🔄 Video cambiado de ${lastVideoId} a ${currentVideoId}, reinicializando...`);
+    isInitialized = false;
+    lastVideoId = currentVideoId;
+  }
+  
+  // Evitar inicializaciones múltiples para el mismo video
+  if (isInitialized) {
+    console.log('⚠️ Sistema de comentarios ya inicializado para este video, saltando...');
+    return;
+  }
+  
+  console.log('🎯 Inicializando sistema de comentarios para video:', currentVideoId);
+  
   // Cargar comentarios
   loadComments();
   
   // Configurar eventos
   setupEvents();
   
-  // Marcar como inicializado
+  // Marcar como inicializado para este video
   isInitialized = true;
 }
 
@@ -200,18 +210,30 @@ async function createNewComment() {
     return;
   }
   
+  console.log('🔍 Debug - Datos para crear comentario:', {
+    id_user: currentUserId,
+    id_video: currentVideoId,
+    comments: text
+  });
+  
   try {
-    await createComment({
+    console.log('📝 Intentando crear comentario...');
+    
+    const result = await createComment({
       id_user: currentUserId,
       id_video: currentVideoId,
       comments: text
     });
+    
+    console.log('✅ Resultado de createComment:', result);
     
     // Limpiar textarea
     textarea.value = '';
     
     // Recargar comentarios
     await loadComments();
+    
+    console.log('🔄 Comentarios recargados');
     
   } catch (error) {
     console.error('❌ Error creando comentario:', error);
@@ -330,4 +352,12 @@ function showError(message) {
       toast.remove();
     }
   }, 5000);
+}
+
+// Función para resetear el sistema cuando cambia el video
+export function resetCommentsSystem() {
+  isInitialized = false;
+  lastVideoId = null;
+  comments = [];
+  console.log('🔄 Sistema de comentarios reseteado');
 }
