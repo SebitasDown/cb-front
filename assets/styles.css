@@ -33,11 +33,13 @@ body {
     left: 0;
     top: 0;
     height: 100vh;
-    width: 80px;
+    width: 100px;
     background-color: var(--color-primary);
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
     z-index: 1000;
     transition: all 0.3s ease-in-out;
+    display: flex;
+    flex-direction: column;
 }
 
 .sidebar.hidden {
@@ -45,14 +47,36 @@ body {
     opacity: 0;
 }
 
+.sidebar .p-3 {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 1.5rem 1rem !important;
+}
+
+.sidebar nav {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.sidebar .flex-grow-1 {
+    flex: 1;
+}
+
+.sidebar .mt-auto {
+    margin-top: auto;
+    padding-bottom: 1rem;
+}
+
 .logo-sidebar {
-    height: 48px;
+    height: 60px;
     width: auto;
 }
 
 /* Main Content */
 .main-content {
-    margin-left: 80px;
+    margin-left: 100px;
     min-height: 100vh;
     position: relative;
     transition: all 0.3s ease-in-out;
@@ -92,8 +116,8 @@ body {
 .nav-item {
     transition: all 0.2s ease-in-out;
     border-radius: 0.5rem;
-    padding: 0.75rem;
-    margin-bottom: 0.5rem;
+    padding: 1.25rem;
+    margin-bottom: 1rem;
 }
 
 .nav-item:hover {
@@ -436,7 +460,7 @@ body {
 }
 
 .comment-actions .btn-delete:hover {
-    background: #dc3545;
+    background: #FE654F;
 }
 
 /* Scrollbar personalizado para comentarios */
@@ -1622,3 +1646,58 @@ button:hover {
     text-shadow: 0 1px 2px rgba(0,0,0,0.3);
     font-size: 0.9rem;
 }
+
+/* ========================================
+   ESTILOS PERSONALIZADOS PARA BOTONES DEL SIDEBAR
+   ======================================== */
+
+/* Botón de logout personalizado */
+#logout-btn {
+    background-color: #ffffff41 !important;
+    border: none !important;
+    color: white !important;
+}
+
+#logout-btn:hover {
+    background-color: #d891e8a4 !important;
+    border: none !important;
+    color: white !important;
+}
+
+#logout-btn:focus {
+    background-color: #d891e8a4 !important;
+    border: none !important;
+    color: white !important;
+    box-shadow: 0 0 0 0.2rem rgba(254, 101, 79, 0.25) !important;
+}
+
+/* Botón de upload personalizado */
+#buttonupload {
+    background-color: #ffffff41 !important;
+    border: none !important;
+    color: white !important;
+}
+
+#buttonupload:hover {
+    background-color: #d891e8a4 !important;
+    border: none !important;
+    color: white !important;
+}
+
+#buttonupload:focus {
+    background-color: #d891e8a4 !important;
+    border: none !important;
+    color: white !important;
+    box-shadow: 0 0 0 0.2rem rgba(234, 162, 252, 0.25) !important;
+}
+
+/* ========================================
+   ESTILOS ESPECÍFICOS DEL HOME
+   ======================================== */
+
+/* Título de Recent Workshops */
+.recent-workshops-title {
+    margin-top: 3rem !important;
+    margin-bottom: 2rem !important;
+}
+

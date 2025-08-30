@@ -3,7 +3,6 @@ import { navigate } from "../../router/router.js";
 const urlSearch = "https://cb-back-prueba.vercel.app/search";
 const urlVideos = "https://cb-back-prueba.vercel.app/videos";
 
-
 function getThumbnailUrl(item) {
   if (item && (item.thumbnail || item.poster)) return item.thumbnail || item.poster;
   return "assets/images/LogocuadradoCoderBoost.png";

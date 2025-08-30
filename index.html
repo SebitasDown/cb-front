@@ -28,37 +28,37 @@
                 </div>
             </div>
 
-            <nav class="nav flex-column d-flex justify-content-between" style="height: 100%; min-height: 400px;">
+            <nav class="nav flex-column d-flex flex-column" style="height: 100%; min-height: 400px;">
                 <!-- Main Navigation Items -->
-                <div>
+                <div class="flex-grow-1">
                     <a href="#" onclick="navigateTo('/home')"
                         class="nav-item nav-link text-white text-center mb-2 rounded" data-label="Home">
-                        <i class="bi bi-house-door-fill fs-5"></i>
+                        <i class="bi bi-house-door-fill fs-4"></i>
                         <span class="nav-text">Home</span>
                     </a>
                     <a href="#" onclick="navigateTo('/videos')"
                         class="nav-item nav-link text-white text-center mb-2 rounded" data-label="Videos">
-                        <i class="bi bi-play-btn-fill fs-5"></i>
-                        <span class="nav-text">Videos</span>
+                        <i class="bi bi-play-btn-fill fs-4"></i>
+                        <span class="nav-text">Video Player</span>
                     </a>
                     <a href="#" onclick="navigateTo('/workshop')"
                         class="nav-item nav-link text-white text-center mb-2 rounded" data-label="Workshops">
-                        <i class="bi bi-images fs-5"></i>
+                        <i class="bi bi-images fs-4"></i>
                         <span class="nav-text">Workshops</span>
                     </a>
                 </div>
                 
-                <!-- User Section - Flexbox positioned at bottom -->
-                <div>
+                <!-- User Section - Fixed at bottom -->
+                <div class="mt-auto">
                     <div class="d-grid gap-2">
-                        <button class="btn btn-outline-light btn-sm w-100" id="buttonupload">
-                            <i class="bi bi-upload me-1"></i>
-                            <span class="btn-text">Upload</span>
-                        </button>
-                        <button class="btn btn-outline-danger btn-sm w-100" id="logout-btn" onclick="handleLogout()">
-                            <i class="bi bi-box-arrow-right me-1"></i>
-                            <span class="btn-text">Logout</span>
-                        </button>
+                        <a href="#" class="nav-item nav-link text-white text-center mb-2 rounded" id="buttonupload">
+                            <i class="bi bi-upload fs-4"></i>
+                            <span class="nav-text">Upload</span>
+                        </a>
+                        <a href="#" class="nav-item nav-link text-white text-center mb-2 rounded" id="logout-btn" onclick="handleLogout()">
+                            <i class="bi bi-box-arrow-right fs-4"></i>
+                            <span class="nav-text">Logout</span>
+                        </a>
                     </div>
                 </div>
             </nav>
@@ -100,35 +100,64 @@
             
             <div class="upload-panel-body">
                 <form id="uploadVideoForm">
-                    <div class="mb-3">
-                        <label for="videoFile" class="form-label fw-bold">Video File:</label>
+                    <!-- Video Upload Section -->
+                    <div class="mb-4">
+                        <label for="videoFile" class="form-label fw-bold">
+                            <i class="bi bi-camera-video me-2"></i>Video File
+                        </label>
                         <input type="file" class="form-control" id="videoFile" name="videoFile" accept="video/*" required>
-                        <div class="form-text">Select a video file to upload</div>
+                        <div class="form-text text-muted">
+                            <i class="bi bi-info-circle me-1"></i>
+                            Supported formats: MP4, AVI, MOV, WebM
+                        </div>
                     </div>
 
-                    <div class="mb-3">
-                        <label for="title" class="form-label fw-bold">Title:</label>
-                        <input type="text" class="form-control" id="title" name="title" placeholder="Enter video title" required>
+                    <!-- Thumbnail Preview Section -->
+                    <div class="mb-4" id="thumbnailPreviewSection" style="display: none;">
+                        <label class="form-label fw-bold">
+                            <i class="bi bi-image me-2"></i>Auto-Generated Thumbnail
+                        </label>
+                        <div class="thumbnail-preview-container">
+                            <div class="thumbnail-preview" id="thumbnailPreview">
+                                <i class="bi bi-image text-muted" style="font-size: 2rem;"></i>
+                                <span class="text-muted">Preview will appear here</span>
+                            </div>
+                            <div class="thumbnail-info">
+                                <div class="alert alert-info mb-0">
+                                    <i class="bi bi-lightbulb me-2"></i>
+                                    <strong>Smart Thumbnail:</strong> Our system will automatically extract the best frame from your video at 25% duration for the perfect thumbnail.
+                                </div>
+                                <div class="form-text text-muted mt-2">
+                                    <i class="bi bi-clock me-1"></i>
+                                    Frame will be extracted at 25% of video duration
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
+                    <!-- Title Input -->
                     <div class="mb-3">
-                        <label for="category" class="form-label fw-bold">Category:</label>
-                        <select class="form-select" id="category" name="category" required>
-                            <option value="">Loading categories...</option>
-                        </select>
+                        <label for="title" class="form-label fw-bold">
+                            <i class="bi bi-type me-2"></i>Title
+                        </label>
+                        <input type="text" class="form-control" id="title" name="title" placeholder="Enter an engaging video title" required>
                     </div>
 
+                    <!-- Category Selection -->
                     <div class="mb-3">
-                        <label for="user" class="form-label fw-bold">Speaker (TL):</label>
+                        <label for="user" class="form-label fw-bold">
+                            <i class="bi bi-person-badge me-2"></i>Speaker (Team Leader)
+                        </label>
                         <select class="form-select" id="user" name="user" required>
-                            <option value="">Loading speakers...</option>
+                            <option value="">Choose a speaker...</option>
                         </select>
                     </div>
 
+                    <!-- Submit Button -->
                     <div class="d-grid">
-                        <button type="submit" class="btn btn-primary btn-lg">
+                        <button type="submit" class="btn btn-primary btn-lg" id="submitBtn">
                             <i class="bi bi-upload me-2"></i>
-                            Upload Video
+                            <span id="submitBtnText">Upload Video</span>
                         </button>
                     </div>
                 </form>
