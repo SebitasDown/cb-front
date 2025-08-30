@@ -36,9 +36,9 @@ function renderVideosGrid(videos) {
             <div class="position-relative">
               <div class="ratio ratio-16x9" style="background: ${gradient}; cursor: pointer; position: relative;"
                 onclick="navigateTo('/videos'); localStorage.setItem('currentVideo', JSON.stringify({ id_video: ${v.id_video}, title: '${safeTitle}', url: '${safeUrl}' }));">
-                <div class="text-white text-center position-absolute" style="top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100%;">
-                  <i class="bi bi-play-circle-fill" style="font-size: 4rem; opacity: 0.9; display: block; margin: 0 auto;"></i>
-                  <div class="mt-3 fw-bold" style="text-shadow: 0 1px 2px rgba(0,0,0,0.3); font-size: 0.9rem;">Reproducir</div>
+                <div class="play-button-container">
+                  <i class="bi bi-play-circle-fill"></i>
+                  <div class="play-text">Reproducir</div>
                 </div>
               </div>
             </div>
