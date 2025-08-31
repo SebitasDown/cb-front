@@ -218,21 +218,19 @@ export function initVideoUpload() {
   async function loadCategories() {
     try {
       const categories = await get(`${API_BASE}/categories`);
-      selectCategory.innerHTML = '<option value="">Choose a category...</option>';
       
-      categories.forEach(category => {
-        const option = document.createElement('option');
-        option.value = category.id_category;
-        option.textContent = category.name;
-        selectCategory.appendChild(option);
-      });
-      
-      console.log('✅ Categorías cargadas:', categories.length);
-    } catch (error) {
-      console.error('❌ Error cargando categorías:', error);
-      selectCategory.innerHTML = '<option value="">Error loading categories</option>';
-    }
+    select.innerHTML = '<option value="">Select a category...</option>';
+    categories.forEach(cat => {
+      const option = document.createElement('option');
+      option.value = cat.id_category;
+      option.textContent = cat.category_name;
+      select.appendChild(option);
+    });
+    console.log('✅ Select de categorías poblado con', categories.length, 'opciones');
+  } catch (e) {
+    console.error('❌ Error cargando categorías:', e);
   }
+}
 
   // Función para cargar speakers
   async function loadSpeakers() {
