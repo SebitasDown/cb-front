@@ -112,6 +112,13 @@ function deleteVideo(videoId, buttonElement) {
         console.log('🔄 Intentando eliminar con service API...');
         const result = await deletes(`${URL_VIDEOS}/${videoId}`);
         console.log('✅ Respuesta del service API:', result);
+        console.log('🔍 Tipo de respuesta:', typeof result);
+        console.log('🔍 Contenido de respuesta:', JSON.stringify(result));
+        
+        // Verificar si la respuesta es exitosa
+        if (result === false || result === null) {
+          throw new Error('El backend devolvió false/null - posible error del servidor');
+        }
         
         // Eliminar el video del array local
         cachedVideos = cachedVideos.filter(v => v.id_video !== videoId);
