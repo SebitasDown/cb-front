@@ -1,5 +1,5 @@
 // frontend/features/workshops/workshops.js
-import { get } from "../../service/api";
+import { get, deletes } from "../../service/api";
 import { navigate } from "../../router/router.js";
 
 const URL_VIDEOS = "https://cb-back-prueba.vercel.app/videos";
@@ -94,19 +94,23 @@ async function openFirstVideoOfCategory(categoryName) {
 
 // Función para eliminar video (global para onclick)
 window.deleteVideo = async function(videoId, buttonElement) {
+  console.log('🗑️ Intentando eliminar video:', videoId);
+  
   if (!confirm('¿Estás seguro de que quieres eliminar este video?')) {
     return;
   }
 
   try {
-    const response = await fetch(`https://cb-back-prueba.vercel.app/videos/${videoId}`, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    });
-
-    if (response.ok) {
+    // Mostrar indicador de carga
+    buttonElement.disabled = true;
+    buttonElement.innerHTML = '<i class="bi bi-hourglass-split"></i>';
+    
+    // Intentar primero con el service API
+    try {
+      console.log('🔄 Intentando eliminar con service API...');
+      const result = await deletes(`${URL_VIDEOS}/${videoId}`);
+      console.log('✅ Respuesta del service API:', result);
+      
       // Eliminar el video del array local
       cachedVideos = cachedVideos.filter(v => v.id_video !== videoId);
       
@@ -114,16 +118,54 @@ window.deleteVideo = async function(videoId, buttonElement) {
       const videoCard = buttonElement.closest('.col-12');
       if (videoCard) {
         videoCard.remove();
+        console.log('✅ Video eliminado del DOM');
       }
       
       // Mostrar mensaje de éxito
       showNotification('Video eliminado correctamente', 'success');
-    } else {
-      throw new Error('Error al eliminar el video');
+      return;
+      
+    } catch (apiError) {
+      console.log('⚠️ Service API falló, intentando con fetch directo...', apiError);
+      
+      // Fallback: usar fetch directo
+      const response = await fetch(`${URL_VIDEOS}/${videoId}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        }
+      });
+
+      console.log('📡 Respuesta del servidor (fetch):', response.status, response.statusText);
+
+      if (response.ok) {
+        // Eliminar el video del array local
+        cachedVideos = cachedVideos.filter(v => v.id_video !== videoId);
+        
+        // Eliminar el elemento del DOM
+        const videoCard = buttonElement.closest('.col-12');
+        if (videoCard) {
+          videoCard.remove();
+          console.log('✅ Video eliminado del DOM (fetch)');
+        }
+        
+        // Mostrar mensaje de éxito
+        showNotification('Video eliminado correctamente', 'success');
+      } else {
+        const errorData = await response.text();
+        console.error('❌ Error del servidor (fetch):', errorData);
+        throw new Error(`Error ${response.status}: ${response.statusText}`);
+      }
     }
+    
   } catch (error) {
-    console.error('Error eliminando video:', error);
-    showNotification('Error al eliminar el video', 'error');
+    console.error('❌ Error eliminando video:', error);
+    showNotification(`Error al eliminar el video: ${error.message}`, 'error');
+  } finally {
+    // Restaurar botón
+    buttonElement.disabled = false;
+    buttonElement.innerHTML = '<i class="bi bi-trash-fill"></i>';
   }
 }
 
