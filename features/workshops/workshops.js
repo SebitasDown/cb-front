@@ -38,9 +38,12 @@ function renderVideosGrid(videos) {
                 onclick="navigateTo('/videos'); localStorage.setItem('currentVideo', JSON.stringify({ id_video: ${v.id_video}, title: '${safeTitle}', url: '${safeUrl}' }));">
                 <div class="play-button-container">
                   <i class="bi bi-play-circle-fill"></i>
-                  <div class="play-text">Reproducir</div>
                 </div>
               </div>
+              <!-- Botón de eliminar -->
+              <button class="btn btn-delete-video" onclick="deleteVideo(${v.id_video}, this)" title="Eliminar video">
+                <i class="bi bi-trash-fill"></i>
+              </button>
             </div>
             <div class="card-body p-3">
               <h6 class="card-title fw-bold mb-0 text-truncate" title="${v.title}">🎬 ${v.title}</h6>
@@ -87,6 +90,59 @@ async function openFirstVideoOfCategory(categoryName) {
   } catch (err) {
     console.error('No se pudo abrir video por categoría:', err);
   }
+}
+
+// Función para eliminar video (global para onclick)
+window.deleteVideo = async function(videoId, buttonElement) {
+  if (!confirm('¿Estás seguro de que quieres eliminar este video?')) {
+    return;
+  }
+
+  try {
+    const response = await fetch(`https://cb-back-prueba.vercel.app/videos/${videoId}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+
+    if (response.ok) {
+      // Eliminar el video del array local
+      cachedVideos = cachedVideos.filter(v => v.id_video !== videoId);
+      
+      // Eliminar el elemento del DOM
+      const videoCard = buttonElement.closest('.col-12');
+      if (videoCard) {
+        videoCard.remove();
+      }
+      
+      // Mostrar mensaje de éxito
+      showNotification('Video eliminado correctamente', 'success');
+    } else {
+      throw new Error('Error al eliminar el video');
+    }
+  } catch (error) {
+    console.error('Error eliminando video:', error);
+    showNotification('Error al eliminar el video', 'error');
+  }
+}
+
+// Función para mostrar notificaciones
+function showNotification(message, type = 'info') {
+  // Crear notificación temporal
+  const notification = document.createElement('div');
+  notification.className = `alert alert-${type === 'success' ? 'success' : 'danger'} position-fixed`;
+  notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+  notification.innerHTML = message;
+  
+  document.body.appendChild(notification);
+  
+  // Remover después de 3 segundos
+  setTimeout(() => {
+    if (notification.parentNode) {
+      notification.parentNode.removeChild(notification);
+    }
+  }, 3000);
 }
 
 export async function initWorkshop() {

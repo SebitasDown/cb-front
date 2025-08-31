@@ -463,6 +463,37 @@ body {
     background: #FE654F;
 }
 
+
+/* Botón de eliminar video en workshops */
+.btn-delete-video {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background: #171E4A;
+    color: white;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    z-index: 10;
+    font-size: 14px;
+}
+
+.btn-delete-video:hover {
+    background: #171e4a59;
+    transform: scale(1.1);
+}
+
+.btn-delete-video:active {
+    transform: scale(0.95);
+}
+
+
 /* Scrollbar personalizado para comentarios */
 #listaComentarios::-webkit-scrollbar {
     width: 6px;
@@ -1639,14 +1670,6 @@ button:hover {
     margin: 0 auto;
 }
 
-/* Texto del botón play */
-.play-button-container .play-text {
-    margin-top: 0.75rem;
-    font-weight: bold;
-    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
-    font-size: 0.9rem;
-}
-
 /* ========================================
    ESTILOS PERSONALIZADOS PARA BOTONES DEL SIDEBAR
    ======================================== */
@@ -1700,4 +1723,6 @@ button:hover {
     margin-top: 3rem !important;
     margin-bottom: 2rem !important;
 }
+
+
 

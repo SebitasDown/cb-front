@@ -23,17 +23,32 @@ async function loadRecentWorkshops() {
     const recentGrid = document.getElementById("recentWorkshopsGrid");
     if (!recentGrid) return;
 
+    // Gradientes para los videos (igual que en workshops)
+    const gradients = [
+      'linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%)',
+      'linear-gradient(135deg, var(--color-accent) 0%, var(--color-pink) 100%)',
+      'linear-gradient(135deg, var(--color-pink) 0%, var(--color-green) 100%)',
+      'linear-gradient(135deg, var(--color-green) 0%, var(--color-yellow) 100%)',
+      'linear-gradient(135deg, var(--color-yellow) 0%, var(--color-orange) 100%)',
+      'linear-gradient(135deg, var(--color-orange) 0%, var(--color-primary) 100%)',
+      'linear-gradient(135deg, var(--color-accent) 0%, var(--color-green) 100%)',
+      'linear-gradient(135deg, var(--color-pink) 0%, var(--color-yellow) 100%)'
+    ];
+
     const cards = recentVideos
-      .map((item) => {
+      .map((item, index) => {
         if (!item?.url) return "";
+        const gradient = gradients[index % gradients.length];
+        
         return `
           <div class="col-12 col-sm-6 col-md-4">
             <div class="card h-100 shadow-sm border-0 overflow-hidden" style="border-radius: 12px;">
               <div class="position-relative">
-                <div class="ratio ratio-16x9">
-                  <img src="${getThumbnailUrl(item)}" loading="lazy" decoding="async" alt="${item.title || 'Video'}" 
-                    style="border-top-left-radius: 12px; border-top-right-radius: 12px; width: 100%; height: 100%; object-fit: cover; cursor: pointer;"
-                    onclick="navigateTo('/videos'); localStorage.setItem('currentVideo', JSON.stringify({ id_video: ${item.id_video || 1}, title: '${item.title?.replace(/'/g, "\\'")}', url: '${item.url?.replace(/'/g, "\\'")}' }));" />
+                <div class="ratio ratio-16x9" style="background: ${gradient}; cursor: pointer; position: relative;"
+                  onclick="navigateTo('/videos'); localStorage.setItem('currentVideo', JSON.stringify({ id_video: ${item.id_video || 1}, title: '${item.title?.replace(/'/g, "\\'")}', url: '${item.url?.replace(/'/g, "\\'")}' }));">
+                  <div class="play-button-container">
+                    <i class="bi bi-play-circle-fill"></i>
+                  </div>
                 </div>
                 <span class="position-absolute top-0 start-0 m-2 badge bg-success">🆕</span>
               </div>
@@ -110,6 +125,7 @@ export function homeUsers() {
                           style="border-top-left-radius: 12px; border-top-right-radius: 12px; width: 100%; height: 100%; object-fit: cover; cursor: pointer;"
                           onclick="navigateTo('/videos'); localStorage.setItem('currentVideo', JSON.stringify({ id_video: ${item.id_video || 1}, title: '${item.title?.replace(/'/g, "\\'")}', url: '${item.url?.replace(/'/g, "\\'")}' }));" />
                       </div>
+
                       <span class="position-absolute top-0 start-0 m-2 badge bg-primary">▶️</span>
                     </div>
                     <div class="card-body p-3">
