@@ -76,6 +76,46 @@ export function homeUsers() {
   const viewContainer = document.querySelector('.view-container');
 
   loadRecentWorkshops();
+  updateWelcomeMessage();
+
+  // Función para actualizar el mensaje de bienvenida con el nickname del usuario
+  async function updateWelcomeMessage() {
+    try {
+      // Obtener el usuario del localStorage (usando la clave "user" como en login.js)
+      const userData = localStorage.getItem('user');
+      
+      if (userData) {
+        const user = JSON.parse(userData);
+        const welcomeTitle = document.querySelector('.welcome-section h2');
+        
+        if (welcomeTitle) {
+          if (user.nickname) {
+            welcomeTitle.innerHTML = `Welcome back, ${user.nickname}! 👋`;
+          } else if (user.name) {
+            // Fallback al nombre si no hay nickname
+            welcomeTitle.innerHTML = `Welcome back, ${user.name}! 👋`;
+          } else if (user.email) {
+            // Fallback al email si no hay nombre ni nickname
+            const emailName = user.email.split('@')[0]; // Tomar la parte antes del @
+            welcomeTitle.innerHTML = `Welcome back, ${emailName}! 👋`;
+          }
+        }
+      } else {
+        // Si no hay usuario logueado, mostrar mensaje genérico
+        const welcomeTitle = document.querySelector('.welcome-section h2');
+        if (welcomeTitle) {
+          welcomeTitle.innerHTML = 'Welcome back, Coder! 👋';
+        }
+      }
+    } catch (error) {
+      console.error('Error updating welcome message:', error);
+      // En caso de error, mostrar mensaje genérico
+      const welcomeTitle = document.querySelector('.welcome-section h2');
+      if (welcomeTitle) {
+        welcomeTitle.innerHTML = 'Welcome back, Coder! 👋';
+      }
+    }
+  }
 
   function setHomeSectionsVisibility(show) {
     if (!viewContainer) return;
