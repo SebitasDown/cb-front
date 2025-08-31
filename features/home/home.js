@@ -93,7 +93,7 @@ export function homeUsers() {
             welcomeTitle.innerHTML = `Welcome back, ${user.nickname}! 👋`;
           } else if (user.name) {
             // Fallback al nombre si no hay nickname
-            welcomeTitle.innerHTML = `Welcome back, ${user.name}! 👋`;
+            welcomeTitle.innerHTML = `Welcome back, ${user.full_name}! 👋`;
           } else if (user.email) {
             // Fallback al email si no hay nombre ni nickname
             const emailName = user.email.split('@')[0]; // Tomar la parte antes del @
