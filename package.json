@@ -5,7 +5,6 @@
   "main": "index.html",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && npm run copy-views && npm run copy-assets",
     "preview": "vite preview",
     "start": "vite preview",
     "test": "echo 'No tests specified'",
