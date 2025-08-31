@@ -51,11 +51,11 @@
         <!-- Right Column: Chat Space aligned with layout -->
         <div class="chat-space">
             <div class="chat-placeholder p-3">
-                <h5 class="text-center mb-3">Chat AI</h5>
-                <div id="messages" aria-live="polite"></div>
+                <h5 class="text-center mb-3 teachbuddy-title">TeachBuddy</h5>
+                <div id="messages" aria-live="polite" class="chat-messages"></div>
                 <form id="form" class="d-flex align-items-center gap-2 mt-2" onsubmit="return false;">
-                    <input id="input" type="text" placeholder="Escribí tu mensaje..." autocomplete="off" class="form-control" />
-                    <button id="send-btn" type="button">
+                    <input id="input" type="text" placeholder="Escribí tu mensaje..." autocomplete="off" class="form-control chat-input" />
+                    <button id="send-btn" type="button" class="chat-send-btn">
                         <i class="bi bi-send-fill"></i>
                     </button>
                 </form>
