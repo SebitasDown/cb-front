@@ -2,6 +2,11 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "rewrites": [
+    { "source": "/login", "destination": "/index.html" },
+    { "source": "/home", "destination": "/index.html" },
+    { "source": "/uploadVideos", "destination": "/index.html" },
+    { "source": "/videos", "destination": "/index.html" },
+    { "source": "/workshop", "destination": "/index.html" },
     { "source": "/(.*)", "destination": "/index.html" }
   ],
   "headers": [
