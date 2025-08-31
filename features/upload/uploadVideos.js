@@ -217,20 +217,32 @@ export function initVideoUpload() {
   // Función para cargar categorías
   async function loadCategories() {
     try {
+      console.log('🔄 Cargando categorías desde:', `${API_BASE}/categories`);
       const categories = await get(`${API_BASE}/categories`);
+      console.log('📊 Categorías recibidas:', categories);
       
-    select.innerHTML = '<option value="">Select a category...</option>';
-    categories.forEach(cat => {
-      const option = document.createElement('option');
-      option.value = cat.id_category;
-      option.textContent = cat.category_name;
-      select.appendChild(option);
-    });
-    console.log('✅ Select de categorías poblado con', categories.length, 'opciones');
-  } catch (e) {
-    console.error('❌ Error cargando categorías:', e);
+      if (!selectCategory) {
+        console.error('❌ Elemento selectCategory no encontrado');
+        return;
+      }
+      
+      selectCategory.innerHTML = '<option value="">Select a category...</option>';
+      
+      if (Array.isArray(categories)) {
+        categories.forEach(cat => {
+          const option = document.createElement('option');
+          option.value = cat.id_category;
+          option.textContent = cat.category_name;
+          selectCategory.appendChild(option);
+        });
+        console.log('✅ Select de categorías poblado con', categories.length, 'opciones');
+      } else {
+        console.error('❌ Las categorías no son un array:', categories);
+      }
+    } catch (e) {
+      console.error('❌ Error cargando categorías:', e);
+    }
   }
-}
 
   // Función para cargar speakers
   async function loadSpeakers() {

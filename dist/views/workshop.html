@@ -1,0 +1,43 @@
+<div class="view-container">
+    <div class="mb-4 mt-5">
+        <h2 class="fw-bold text-primary mb-1">Workshops Gallery</h2>
+        <p class="text-muted mb-0">Explore videos by topic. Click any card to show it</p>
+    </div>
+    
+
+    <!-- Workshop Categories -->
+    <div class="mb-4">
+        <h3 class="h5 fw-bold text-primary mb-3">Categorías</h3>
+        <div class="d-flex align-items-center gap-4 flex-wrap">
+            <div class="category-chip" data-category="Python">
+                <span class="me-2">🐍</span>
+                <span>Python</span>
+            </div>
+            <div class="category-chip" data-category="Databases">
+                <span class="me-2">🗄️</span>
+                <span>Databases</span>
+            </div>
+            <div class="category-chip" data-category="CSS">
+                <span class="me-2">🎨</span>
+                <span>CSS</span>
+            </div>
+            <div class="category-chip" data-category="HTML">
+                <span class="me-2">📄</span>
+                <span>HTML</span>
+            </div>
+            <div class="category-chip" data-category="JavaScript">
+                <span class="me-2">✨</span>
+                <span>JavaScript</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Videos list -->
+    <div class="mt-5 pt-3" style="border-top: 1px solid var(--color-gray-200);">
+        <h3 class="h5 fw-bold text-primary mb-3">Videos</h3>
+        <div id="workshopVideosGrid" class="row g-3"></div>
+    </div>
+
+</div>
+
+<script type="module" src="../features/workshops/workshops.js" defer></script>
