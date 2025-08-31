@@ -88,17 +88,12 @@ export function homeUsers() {
         const user = JSON.parse(userData);
         const welcomeTitle = document.querySelector('.welcome-section h2');
         
-        if (welcomeTitle) {
-          if (user.nickname) {
-            welcomeTitle.innerHTML = `Welcome back, ${user.nickname}! 👋`;
-          } else if (user.name) {
-            // Fallback al nombre si no hay nickname
-            welcomeTitle.innerHTML = `Welcome back, ${user.name}! 👋`;
-          } else if (user.email) {
-            // Fallback al email si no hay nombre ni nickname
-            const emailName = user.email.split('@')[0]; // Tomar la parte antes del @
-            welcomeTitle.innerHTML = `Welcome back, ${emailName}! 👋`;
-          }
+        if (welcomeTitle && user.nickname) {
+          // Solo usar nickname de la base de datos
+          welcomeTitle.innerHTML = `Welcome back, ${user.nickname}! 👋`;
+        } else if (welcomeTitle) {
+          // Si no hay nickname, mostrar mensaje genérico
+          welcomeTitle.innerHTML = 'Welcome back, Coder! 👋';
         }
       } else {
         // Si no hay usuario logueado, mostrar mensaje genérico
