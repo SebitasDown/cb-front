@@ -6,8 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build && npm run copy-views && npm run copy-assets",
-    "copy-views": "if not exist dist\\views mkdir dist\\views && xcopy views dist\\views /E /I /Y",
-    "copy-assets": "if not exist dist\\assets\\images mkdir dist\\assets\\images && xcopy assets\\images dist\\assets\\images /E /I /Y",
+    "copy-views": "node -e \"const fs = require('fs'); const path = require('path'); if (!fs.existsSync('dist/views')) fs.mkdirSync('dist/views', { recursive: true }); const viewsDir = 'views'; const distViewsDir = 'dist/views'; fs.readdirSync(viewsDir).forEach(file => { const sourcePath = path.join(viewsDir, file); const destPath = path.join(distViewsDir, file); if (fs.statSync(sourcePath).isDirectory()) { if (!fs.existsSync(destPath)) fs.mkdirSync(destPath, { recursive: true }); } fs.copyFileSync(sourcePath, destPath); }); console.log('Views copied successfully');\"",
+    "copy-assets": "node -e \"const fs = require('fs'); const path = require('path'); if (!fs.existsSync('dist/assets/images')) fs.mkdirSync('dist/assets/images', { recursive: true }); const assetsDir = 'assets/images'; const distAssetsDir = 'dist/assets/images'; fs.readdirSync(assetsDir).forEach(file => { const sourcePath = path.join(assetsDir, file); const destPath = path.join(distAssetsDir, file); fs.copyFileSync(sourcePath, destPath); }); console.log('Assets copied successfully');\"",
     "preview": "vite preview",
     "start": "vite preview",
     "test": "echo 'No tests specified'",
