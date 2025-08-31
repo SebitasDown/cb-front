@@ -1736,31 +1736,21 @@ button:hover {
     background-clip: text;
     font-weight: 700;
     font-size: 1.5rem;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    
 }
 
 /* Contenedor del chat */
-.chat-space {
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-    border-radius: 16px;
-    border: 2px solid transparent;
-    background-clip: padding-box;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-    backdrop-filter: blur(10px);
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-}
 
 .chat-placeholder {
-    background: rgba(255, 255, 255, 0.9);
+    background: linear-gradient(135deg, #725cff65 0%, #5acca494 100%);
     border-radius: 12px;
-    margin: 8px;
+    margin: 12px;
     backdrop-filter: blur(10px);
     flex: 1;
     display: flex;
     flex-direction: column;
     height: 100%;
+    position: relative;
 }
 
 /* Mensajes del chat */
@@ -1784,6 +1774,8 @@ button:hover {
     transition: all 0.3s ease;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     flex-shrink: 0;
+    width: 90%;
+    box-sizing: border-box;
 }
 
 .chat-input:focus {
@@ -1808,16 +1800,20 @@ button:hover {
     transition: all 0.3s ease;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     flex-shrink: 0;
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
 }
 
 .chat-send-btn:hover {
     background: linear-gradient(135deg, var(--color-accent), var(--color-pink));
-    transform: scale(1.1) rotate(5deg);
+    transform: translateY(-50%) scale(1.1) rotate(5deg);
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
 }
 
 .chat-send-btn:active {
-    transform: scale(0.95);
+    transform: translateY(-50%) scale(0.95);
 }
 
 /* Formulario del chat */
@@ -1825,6 +1821,7 @@ button:hover {
     margin-top: auto;
     padding-top: 1rem;
     border-top: 1px solid rgba(0, 0, 0, 0.1);
+    position: relative;
 }
 
 /* Responsive para el chat */
