@@ -5,6 +5,9 @@
   "main": "index.html",
   "scripts": {
     "dev": "vite",
+    "build": "vite build && npm run copy-views && npm run copy-assets",
+    "copy-views": "powershell -Command \"if (!(Test-Path dist/views)) { New-Item -ItemType Directory -Path dist/views -Force }; Copy-Item -Path views/* -Destination dist/views/ -Recurse\"",
+    "copy-assets": "powershell -Command \"if (!(Test-Path dist/assets/images)) { New-Item -ItemType Directory -Path dist/assets/images -Force }; Copy-Item -Path assets/images/* -Destination dist/assets/images/ -Recurse\"",
     "preview": "vite preview",
     "start": "vite preview",
     "test": "echo 'No tests specified'",
