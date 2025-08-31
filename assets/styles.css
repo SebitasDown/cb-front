@@ -72,6 +72,32 @@ body {
 .logo-sidebar {
     height: 60px;
     width: auto;
+    transition: all 0.3s ease;
+}
+
+/* Responsive logo para diferentes tamaños de pantalla */
+@media (max-width: 1200px) {
+    .logo-sidebar {
+        height: 55px;
+    }
+}
+
+@media (max-width: 768px) {
+    .logo-sidebar {
+        height: 50px;
+    }
+}
+
+@media (max-width: 576px) {
+    .logo-sidebar {
+        height: 45px;
+    }
+}
+
+@media (max-width: 480px) {
+    .logo-sidebar {
+        height: 40px;
+    }
 }
 
 /* Main Content */
@@ -723,7 +749,7 @@ body {
     }
     
     .logo-sidebar {
-        height: 60px;
+        height: 50px;
         margin-bottom: 2rem;
     }
     
