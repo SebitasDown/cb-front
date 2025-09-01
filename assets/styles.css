@@ -1074,10 +1074,13 @@ body {
 /* DEFINICIÓN ÚNICA Y LIMPIA DEL CHAT */
 .chat-space {
     width: 500px;
+    height: 800px;
+    max-height: 800px;
     flex-shrink: 0;
     position: sticky;
     top: 2rem;
     z-index: 10;
+    overflow: hidden;
 }
 
 /* SOLUCIÓN DEFINITIVA PARA DISPOSITIVOS PEQUEÑOS */
@@ -1101,7 +1104,9 @@ body {
     border-radius: 0.75rem;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     border: 2px solid var(--color-gray-200);
-    min-height: 900px;
+    height: 800px;
+    max-height: 800px;
+    overflow: hidden;
     padding: 1.5rem !important;
 }
 
@@ -1855,11 +1860,14 @@ button:hover {
     .chat-space {
         margin-top: 2rem;
         border-radius: 12px;
-        height: auto;
+        height: 500px;
+        max-height: 500px;
     }
     
     .chat-placeholder {
-        height: auto;
+        height: 500px;
+        max-height: 500px;
+        overflow: hidden;
     }
     
     .teachbuddy-title {
@@ -1886,11 +1894,14 @@ button:hover {
     .chat-space {
         margin: 1rem 0;
         border-radius: 8px;
-        height: auto;
+        height: 400px;
+        max-height: 400px;
     }
     
     .chat-placeholder {
-        height: auto;
+        height: 400px;
+        max-height: 400px;
+        overflow: hidden;
     }
     
     .teachbuddy-title {
