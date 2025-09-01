@@ -213,11 +213,7 @@ function renderComments() {
     listaComentarios.appendChild(commentElement);
   });
   
-  // Agregar botón "Show More" si hay más comentarios
-  if (hasMoreComments) {
-    const showMoreButton = createShowMoreButton();
-    listaComentarios.appendChild(showMoreButton);
-  }
+
 }
 
 // Mostrar indicador de carga
@@ -516,3 +512,5 @@ window.retryLoadComments = function() {
   isInitialized = false;
   initComments();
 };
+
+

@@ -27,6 +27,8 @@ export function initChat() {
   function clearChat() {
     messagesContainer.innerHTML = '';
     addMessage('¡Hola! Soy tu asistente de IA especializado en desarrollo de software. ¿En qué puedo ayudarte con este video?', 'bot');
+    // Asegurar scroll al final después de limpiar
+    setTimeout(() => scrollToBottom(), 200);
   }
 
   // Función para escapar HTML
@@ -85,6 +87,16 @@ export function initChat() {
     return formattedText;
   }
 
+  // Función para hacer scroll suave al final del chat
+  function scrollToBottom() {
+    setTimeout(() => {
+      messagesContainer.scrollTo({
+        top: messagesContainer.scrollHeight,
+        behavior: 'smooth'
+      });
+    }, 100);
+  }
+
   // Función para agregar mensajes al chat
   function addMessage(text, sender) {
     const messageDiv = document.createElement('div');
@@ -111,8 +123,8 @@ export function initChat() {
     messageDiv.appendChild(timestamp);
     messagesContainer.appendChild(messageDiv);
     
-    // Scroll al último mensaje
-    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    // Scroll suave al último mensaje
+    scrollToBottom();
     
     // Animación de entrada
     messageDiv.style.opacity = '0';
@@ -149,7 +161,7 @@ export function initChat() {
       </div>
     `;
     messagesContainer.appendChild(typingIndicator);
-    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    scrollToBottom();
 
     try {
       console.log('🌐 Enviando a:', CHAT_ENDPOINT);
@@ -207,6 +219,9 @@ export function initChat() {
 
   // Mensaje de bienvenida
   addMessage('¡Hola! Soy tu asistente de IA especializado en desarrollo de software. ¿En qué puedo ayudarte con este video?', 'bot');
+  
+  // Asegurar que el chat esté scrolleado al final al inicializar
+  scrollToBottom();
 
   // Escuchar cambios en el localStorage para actualizar el chat cuando cambie el video
   window.addEventListener('storage', (e) => {
