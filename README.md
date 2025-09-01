@@ -1,5 +1,8 @@
 # 🧾 CoderBoost 🚀
 
+## 🌐 Live Demo
+**[🚀 Try CoderBoost Now](https://cb-front.vercel.app/)**
+
 ## 📌 Project Description
 
 This project is part of the Integrator Project "CodeUp Riwi: Your jump to the next level" and aims to develop an interactive website (MPA or SPA) that addresses a problem or need in one of the allowed categories.
