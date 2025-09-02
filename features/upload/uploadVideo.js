@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // Función para cargar categorías desde la API
   async function loadCategories() {
     try {
-      const response = await fetch('http://localhost:3000/categories');
+      const response = await fetch('https://cb-back-prueba-production.up.railway.app/categories');
       if (!response.ok) {
         throw new Error('Error loading categories');
       }
@@ -59,7 +59,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // Función para cargar speakers desde la API
   async function loadSpeakers() {
     try {
-      const response = await fetch('http://localhost:3000/speakers');
+      const response = await fetch('https://cb-back-prueba-production.up.railway.app/speakers');
       if (!response.ok) {
         throw new Error('Error loading speakers');
       }
@@ -125,7 +125,7 @@ document.addEventListener('DOMContentLoaded', function() {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 120000); // 2 minutos
       
-      const response = await fetch('http://localhost:3000/videos/create', {
+      const response = await fetch('https://cb-back-prueba-production.up.railway.app/videos/create', {
         method: 'POST',
         body: formData,
         signal: controller.signal

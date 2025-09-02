@@ -1,6 +1,6 @@
 import { post } from "../../service/api.js";
 
-const API_BASE = "https://cb-back-prueba.vercel.app";
+const API_BASE = "https://cb-back-prueba-production.up.railway.app";
 const CHAT_ENDPOINT = `${API_BASE}/chat`;
 
 export function initChat() {

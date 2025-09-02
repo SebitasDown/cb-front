@@ -121,7 +121,7 @@ npm install
 npm run dev
 
 # The server will start at:
-# http://localhost:3000
+# http://localhost:5173 (Vite default port)
 # It will open automatically in the browser
 ```
 
@@ -203,7 +203,7 @@ Create a `.env` file in the root directory:
 
 ```env
 # API Configuration
-VITE_API_BASE_URL=https://your-backend-url.vercel.app
+VITE_API_BASE_URL=https://cb-back-prueba-production.up.railway.app
 
 # Cloudinary Configuration
 VITE_CLOUDINARY_CLOUD_NAME=your_cloud_name

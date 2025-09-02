@@ -1,7 +1,7 @@
 import { navigate } from "../../router/router.js";
 import { get } from "../../service/api.js";
 
-const API_BASE = "https://cb-back-prueba.vercel.app";
+const API_BASE = "https://cb-back-prueba-production.up.railway.app";
 
 export function initVideoUpload() {
   const uploadPanel = document.getElementById('uploadPanel');

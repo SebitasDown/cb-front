@@ -1,6 +1,6 @@
 import { get,post,deletes,update, } from "../../service/api.js";
 
-const BASE_URL = "https://cb-back-prueba.vercel.app/comment";
+const BASE_URL = "https://cb-back-prueba-production.up.railway.app/comment";
 
 // Obtener comentarios de un video
 export async function getComments(id_video) {
