@@ -3,6 +3,18 @@
 ## 🌐 Live Demo
 **[🚀 Try CoderBoost Now](https://cb-front.vercel.app/)**
 
+## 🧪 Test Credentials
+
+You can use the following accounts to explore the different roles and features of the platform:
+
+| Role | Email | Password | Nickname |
+| :--- | :--- | :--- | :--- |
+| **Administrator** | `sebitas@gmail.com` | `admin123` | sebitas |
+| **Speaker** | `juan@example.com` | `team123` | juanpi |
+| **Speaker** | `ana@example.com` | `team123` | anamar |
+| **Student** | `maria@example.com` | `user123` | mary |
+| **Student** | `carlos@example.com` | `user123` | carli |
+
 ## 📌 Project Description
 
 This project is part of the Integrator Project "CodeUp Riwi: Your jump to the next level" and aims to develop an interactive website (MPA or SPA) that addresses a problem or need in one of the allowed categories.
