@@ -1,7 +1,7 @@
 import { get, post, update, deletes } from "../../service/api";
 import { navigate } from "../../router/router.js";
-const urlSearch = "https://cb-back-prueba-production.up.railway.app/search";
-const urlVideos = "https://cb-back-prueba-production.up.railway.app/videos";
+const urlSearch = "https://cb-back-prueba.vercel.app/search";
+const urlVideos = "https://cb-back-prueba.vercel.app/videos";
 
 function getThumbnailUrl(item) {
   if (item && (item.thumbnail || item.poster)) return item.thumbnail || item.poster;
@@ -46,7 +46,7 @@ export function homeUsers() {
       if (resultsContainer) resultsContainer.innerHTML = "";
       return;
     }
-    
+
     try {
       // Ocultar el resto del home excepto la barra de búsqueda y resultados
       setHomeSectionsVisibility(false);
@@ -60,9 +60,9 @@ export function homeUsers() {
 
       const cards = Array.isArray(result)
         ? result
-            .map((item) => {
-              if (!item?.url) return "";
-              return `
+          .map((item) => {
+            if (!item?.url) return "";
+            return `
                 <div class="col-12 col-sm-6 col-md-4 col-lg-3">
                   <div class="card h-100 shadow-sm border-0 overflow-hidden" style="border-radius: .5rem;">
                     <div class="position-relative">
@@ -78,15 +78,15 @@ export function homeUsers() {
                   </div>
                 </div>
               `;
-            })
-            .join("")
+          })
+          .join("")
         : "";
 
       resultsContainer.innerHTML = cards
         ? `<div class="row g-3">${cards}</div>`
         : `<div class="p-2">No se encontraron resultados para "${q}"</div>`;
     } catch (error) {
-        console.error("Error fetching search results:", error);
+      console.error("Error fetching search results:", error);
     }
   }
 

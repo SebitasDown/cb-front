@@ -203,7 +203,7 @@ Create a `.env` file in the root directory:
 
 ```env
 # API Configuration
-VITE_API_BASE_URL=https://cb-back-prueba-production.up.railway.app
+VITE_API_BASE_URL=https://cb-back-prueba.vercel.app
 
 # Cloudinary Configuration
 VITE_CLOUDINARY_CLOUD_NAME=your_cloud_name

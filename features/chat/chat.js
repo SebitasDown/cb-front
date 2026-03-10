@@ -1,11 +1,11 @@
 import { post } from "../../service/api.js";
 
-const API_BASE = "https://cb-back-prueba-production.up.railway.app";
+const API_BASE = "https://cb-back-prueba.vercel.app";
 const CHAT_ENDPOINT = `${API_BASE}/chat`;
 
 export function initChat() {
   console.log('🚀 Inicializando chat...');
-  
+
   const messagesContainer = document.getElementById('messages');
   const input = document.getElementById('input');
   const sendBtn = document.getElementById('send-btn');
@@ -41,7 +41,7 @@ export function initChat() {
   // Función para formatear mensajes del bot
   function formatBotMessage(text) {
     let formattedText = text;
-    
+
     // Detectar bloques de código (texto entre ```)
     formattedText = formattedText.replace(/```(\w+)?\n([\s\S]*?)```/g, (match, lang, code) => {
       const language = lang || 'text';
@@ -53,37 +53,37 @@ export function initChat() {
         <pre class="code-content"><code>${escapeHtml(code.trim())}</code></pre>
       </div>`;
     });
-    
+
     // Detectar código en línea (texto entre `)
     formattedText = formattedText.replace(/`([^`]+)`/g, '<code class="inline-code">$1</code>');
-    
+
     // Detectar listas numeradas
     formattedText = formattedText.replace(/^\d+\.\s+(.+)$/gm, '<li>$1</li>');
     if (formattedText.includes('<li>') && !formattedText.includes('<ol')) {
       formattedText = formattedText.replace(/(<li>.*<\/li>)/s, '<ol class="numbered-list">$1</ol>');
     }
-    
+
     // Detectar listas con viñetas
     formattedText = formattedText.replace(/^[-*]\s+(.+)$/gm, '<li>$1</li>');
     if (formattedText.includes('<li>') && !formattedText.includes('<ol')) {
       formattedText = formattedText.replace(/(<li>.*<\/li>)/s, '<ul class="bullet-list">$1</ul>');
     }
-    
+
     // Detectar títulos (líneas que empiezan con #)
     formattedText = formattedText.replace(/^#{1,3}\s+(.+)$/gm, (match, title) => {
       const level = match.match(/^#+/)[0].length;
       return `<h${Math.min(level, 6)} class="message-title">${title}</h${Math.min(level, 6)}>`;
     });
-    
+
     // Detectar texto en negrita (**texto**)
     formattedText = formattedText.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-    
+
     // Detectar texto en cursiva (*texto*)
     formattedText = formattedText.replace(/\*(.+?)\*/g, '<em>$1</em>');
-    
+
     // Convertir saltos de línea en <br>
     formattedText = formattedText.replace(/\n/g, '<br>');
-    
+
     return formattedText;
   }
 
@@ -101,7 +101,7 @@ export function initChat() {
   function addMessage(text, sender) {
     const messageDiv = document.createElement('div');
     messageDiv.className = sender === 'user' ? 'user-msg' : 'bot-msg';
-    
+
     // Detectar si el texto contiene código o necesita formateo especial
     if (sender === 'bot') {
       // Formatear el texto del bot para código y texto especial
@@ -110,7 +110,7 @@ export function initChat() {
       // Mensajes del usuario se mantienen como texto plano
       messageDiv.textContent = text;
     }
-    
+
     // Agregar timestamp
     const timestamp = document.createElement('small');
     timestamp.className = 'message-time';
@@ -119,18 +119,18 @@ export function initChat() {
     timestamp.style.fontSize = '0.75rem';
     timestamp.style.opacity = '0.7';
     timestamp.style.marginTop = '0.25rem';
-    
+
     messageDiv.appendChild(timestamp);
     messagesContainer.appendChild(messageDiv);
-    
+
     // Scroll suave al último mensaje
     scrollToBottom();
-    
+
     // Animación de entrada
     messageDiv.style.opacity = '0';
     messageDiv.style.transform = 'translateY(10px)';
     messageDiv.style.transition = 'all 0.3s ease';
-    
+
     setTimeout(() => {
       messageDiv.style.opacity = '1';
       messageDiv.style.transform = 'translateY(0)';
@@ -146,10 +146,10 @@ export function initChat() {
 
     // Agregar mensaje del usuario
     addMessage(message, 'user');
-    
+
     // Limpiar input
     input.value = '';
-    
+
     // Mostrar indicador de escritura
     const typingIndicator = document.createElement('div');
     typingIndicator.className = 'bot-msg typing-indicator';
@@ -165,14 +165,14 @@ export function initChat() {
 
     try {
       console.log('🌐 Enviando a:', CHAT_ENDPOINT);
-      
+
       // Obtener el videoID del localStorage o usar un valor por defecto
       const currentVideo = JSON.parse(localStorage.getItem('currentVideo')) || {};
       const videoID = currentVideo.id_video || 1; // Valor por defecto si no hay video seleccionado
-      
+
       console.log('🎥 Video ID:', videoID);
       console.log('🎬 Video actual:', currentVideo);
-      
+
       // Enviar mensaje al backend según tu API
       const response = await post(CHAT_ENDPOINT, {
         ask: message,
@@ -195,10 +195,10 @@ export function initChat() {
 
     } catch (error) {
       console.error('❌ Error sending message:', error);
-      
+
       // Remover indicador de escritura
       messagesContainer.removeChild(typingIndicator);
-      
+
       // Mensaje de error
       addMessage('Lo siento, hubo un error al procesar tu mensaje. Inténtalo de nuevo.', 'bot');
     }
@@ -206,7 +206,7 @@ export function initChat() {
 
   // Event listeners
   sendBtn.addEventListener('click', sendMessage);
-  
+
   input.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') {
       e.preventDefault();
@@ -219,7 +219,7 @@ export function initChat() {
 
   // Mensaje de bienvenida
   addMessage('¡Hola! Soy tu asistente de IA especializado en desarrollo de software. ¿En qué puedo ayudarte con este video?', 'bot');
-  
+
   // Asegurar que el chat esté scrolleado al final al inicializar
   scrollToBottom();
 
@@ -233,7 +233,7 @@ export function initChat() {
 
   // También escuchar cambios desde el mismo tab
   const originalSetItem = localStorage.setItem;
-  localStorage.setItem = function(key, value) {
+  localStorage.setItem = function (key, value) {
     if (key === 'currentVideo') {
       console.log('🎬 Video cambiado desde el mismo tab, limpiando chat...');
       setTimeout(() => clearChat(), 100);
@@ -242,17 +242,17 @@ export function initChat() {
   };
 
   // Función para copiar código (se expone globalmente)
-  window.copyCode = function(button) {
+  window.copyCode = function (button) {
     const codeBlock = button.closest('.code-block');
     const codeContent = codeBlock.querySelector('.code-content code');
     const textToCopy = codeContent.textContent;
-    
+
     navigator.clipboard.writeText(textToCopy).then(() => {
       // Cambiar temporalmente el botón para mostrar que se copió
       const originalText = button.textContent;
       button.textContent = '✅';
       button.style.background = '#28a745';
-      
+
       setTimeout(() => {
         button.textContent = originalText;
         button.style.background = '';
@@ -261,7 +261,7 @@ export function initChat() {
       console.error('Error copiando código:', err);
       button.textContent = '❌';
       button.style.background = '#dc3545';
-      
+
       setTimeout(() => {
         button.textContent = '📋';
         button.style.background = '';

@@ -1,7 +1,7 @@
 import { navigate } from "../../router/router.js";
 import { get } from "../../service/api.js";
 
-const API_BASE = "https://cb-back-prueba-production.up.railway.app";
+const API_BASE = "https://cb-back-prueba.vercel.app";
 
 export function initVideoUpload() {
   const uploadPanel = document.getElementById('uploadPanel');
@@ -22,7 +22,7 @@ export function initVideoUpload() {
   uploadPanel.classList.remove('show');
 
   console.log('🔄 Inicializando panel de upload con preview de miniatura...');
-  
+
   // Cargar selects: categorías y speakers
   loadCategories();
   loadSpeakers();
@@ -36,32 +36,32 @@ export function initVideoUpload() {
 
     // Crear URL temporal para el video
     const videoURL = URL.createObjectURL(file);
-    
+
     // Crear elemento video temporal para extraer frame
     const tempVideo = document.createElement('video');
     tempVideo.muted = true;
     tempVideo.crossOrigin = 'anonymous';
-    
-    tempVideo.addEventListener('loadedmetadata', function() {
+
+    tempVideo.addEventListener('loadedmetadata', function () {
       // Extraer frame al 25% de la duración
       const seekTime = this.duration * 0.25;
       this.currentTime = seekTime;
     });
-    
-    tempVideo.addEventListener('seeked', function() {
+
+    tempVideo.addEventListener('seeked', function () {
       // Crear canvas para capturar el frame
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d');
-      
+
       canvas.width = this.videoWidth;
       canvas.height = this.videoHeight;
-      
+
       // Dibujar el frame en el canvas
       ctx.drawImage(this, 0, 0, canvas.width, canvas.height);
-      
+
       // Convertir a imagen
       const thumbnailURL = canvas.toDataURL('image/jpeg', 0.8);
-      
+
       // Mostrar la miniatura
       thumbnailPreview.innerHTML = `
         <img src="${thumbnailURL}" alt="Video Thumbnail Preview" style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">
@@ -69,19 +69,19 @@ export function initVideoUpload() {
           ${Math.round(this.duration)}s
         </div>
       `;
-      
+
       // Mostrar la sección de preview
       thumbnailPreviewSection.style.display = 'block';
-      
+
       // Limpiar URL temporal
       URL.revokeObjectURL(videoURL);
     });
-    
-    tempVideo.addEventListener('error', function() {
+
+    tempVideo.addEventListener('error', function () {
       console.error('Error al cargar video para preview');
       thumbnailPreviewSection.style.display = 'none';
     });
-    
+
     tempVideo.src = videoURL;
   }
 
@@ -118,9 +118,9 @@ export function initVideoUpload() {
 
   // Cerrar panel haciendo clic fuera
   document.addEventListener('click', (e) => {
-    if (uploadPanel.classList.contains('show') && 
-        !uploadPanel.contains(e.target) && 
-        !e.target.closest('#buttonupload')) {
+    if (uploadPanel.classList.contains('show') &&
+      !uploadPanel.contains(e.target) &&
+      !e.target.closest('#buttonupload')) {
       uploadPanel.classList.remove('show');
       form.reset();
       thumbnailPreviewSection.style.display = 'none';
@@ -143,7 +143,7 @@ export function initVideoUpload() {
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    
+
     try {
       // Cambiar estado del botón
       submitBtn.disabled = true;
@@ -155,9 +155,9 @@ export function initVideoUpload() {
 
       const userId = selectUser?.value;
       const categoryId = selectCategory?.value;
-      
+
       console.log('📝 Valores del formulario:', { userId, categoryId, title: titleInput.value });
-      
+
       if (!userId || !categoryId) {
         alert('Please select both a category and a speaker');
         return;
@@ -187,7 +187,7 @@ export function initVideoUpload() {
       // Mostrar animación de éxito
       uploadPanel.classList.add('success');
       submitBtnText.textContent = '✅ Upload Complete!';
-      
+
       // Resetear formulario después de 2 segundos
       setTimeout(() => {
         form.reset();
@@ -204,12 +204,12 @@ export function initVideoUpload() {
 
     } catch (error) {
       console.error('❌ Error durante el upload:', error);
-      
+
       // Restaurar estado del botón
       submitBtn.disabled = false;
       submitBtn.classList.remove('loading');
       submitBtnText.textContent = 'Upload Video';
-      
+
       alert('Error uploading video. Please try again.');
     }
   });
@@ -220,14 +220,14 @@ export function initVideoUpload() {
       console.log('🔄 Cargando categorías desde:', `${API_BASE}/categories`);
       const categories = await get(`${API_BASE}/categories`);
       console.log('📊 Categorías recibidas:', categories);
-      
+
       if (!selectCategory) {
         console.error('❌ Elemento selectCategory no encontrado');
         return;
       }
-      
+
       selectCategory.innerHTML = '<option value="">Select a category...</option>';
-      
+
       if (Array.isArray(categories)) {
         categories.forEach(cat => {
           const option = document.createElement('option');
@@ -249,14 +249,14 @@ export function initVideoUpload() {
     try {
       const speakers = await get(`${API_BASE}/speakers`);
       selectUser.innerHTML = '<option value="">Choose a speaker...</option>';
-      
+
       speakers.forEach(speaker => {
         const option = document.createElement('option');
         option.value = speaker.id_user;
         option.textContent = speaker.nickname;
         selectUser.appendChild(option);
       });
-      
+
       console.log('✅ Speakers cargados:', speakers.length);
     } catch (error) {
       console.error('❌ Error cargando speakers:', error);

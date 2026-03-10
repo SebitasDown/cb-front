@@ -1,6 +1,6 @@
 // Configuración centralizada de la aplicación
 export const API_CONFIG = {
-  BASE_URL: "https://cb-back-prueba-production.up.railway.app",
+  BASE_URL: "https://cb-back-prueba.vercel.app",
   ENDPOINTS: {
     AUTH: "/auth",
     VIDEOS: "/videos",

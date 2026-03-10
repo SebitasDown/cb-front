@@ -1,7 +1,7 @@
 import { navigate } from "../../router/router.js";
 import { post } from "../../service/api.js";
 
-const API_URL = "https://cb-back-prueba-production.up.railway.app/auth";
+const API_URL = "https://cb-back-prueba.vercel.app/auth";
 
 export function LoginUser() {
   const form = document.getElementById("login-form");
@@ -24,7 +24,7 @@ export function LoginUser() {
         if (res.user) {
           localStorage.setItem("user", JSON.stringify(res.user));
           console.log(`Login successful. Welcome, ${res.user.email}`);
-          navigate("/home"); 
+          navigate("/home");
         } else {
           console.log(`Login failed: ${res.message || "Invalid credentials"}`);
         }

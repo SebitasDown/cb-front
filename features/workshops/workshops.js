@@ -2,8 +2,8 @@
 import { get, deletes } from "../../service/api";
 import { navigate } from "../../router/router.js";
 
-const URL_VIDEOS = "https://cb-back-prueba-production.up.railway.app/videos";
-const URL_CATEGORIES = "https://cb-back-prueba-production.up.railway.app/categories";
+const URL_VIDEOS = "https://cb-back-prueba.vercel.app/videos";
+const URL_CATEGORIES = "https://cb-back-prueba.vercel.app/categories";
 
 let cachedCategories = [];
 let cachedVideos = [];
@@ -29,7 +29,7 @@ function renderVideosGrid(videos) {
       const safeTitle = (v.title || "Video").replace(/'/g, "\\'");
       const safeUrl = (v.url || "").replace(/'/g, "\\'");
       const gradient = gradients[index % gradients.length];
-      
+
       return `
         <div class="col-12 col-sm-6 col-md-4 col-lg-3">
           <div class="card h-100 shadow-sm border-0 overflow-hidden" style="border-radius: 12px;">
@@ -95,7 +95,7 @@ async function openFirstVideoOfCategory(categoryName) {
 // Función para eliminar video (global para onclick)
 function deleteVideo(videoId, buttonElement) {
   console.log('🗑️ Intentando eliminar video:', videoId);
-  
+
   if (!confirm('¿Estás seguro de que quieres eliminar este video?')) {
     return;
   }
@@ -103,7 +103,7 @@ function deleteVideo(videoId, buttonElement) {
   // Mostrar indicador de carga
   buttonElement.disabled = true;
   buttonElement.innerHTML = '<i class="bi bi-hourglass-split"></i>';
-  
+
   // Usar async/await con IIFE
   (async () => {
     try {
@@ -114,29 +114,29 @@ function deleteVideo(videoId, buttonElement) {
         console.log('✅ Respuesta del service API:', result);
         console.log('🔍 Tipo de respuesta:', typeof result);
         console.log('🔍 Contenido de respuesta:', JSON.stringify(result));
-        
+
         // Verificar si la respuesta es exitosa
         if (result === false || result === null) {
           throw new Error('El backend devolvió false/null - posible error del servidor');
         }
-        
+
         // Eliminar el video del array local
         cachedVideos = cachedVideos.filter(v => v.id_video !== videoId);
-        
+
         // Eliminar el elemento del DOM
         const videoCard = buttonElement.closest('.col-12');
         if (videoCard) {
           videoCard.remove();
           console.log('✅ Video eliminado del DOM');
         }
-        
+
         // Mostrar mensaje de éxito
         showNotification('Video eliminado correctamente', 'success');
         return;
-        
+
       } catch (apiError) {
         console.log('⚠️ Service API falló, intentando con fetch directo...', apiError);
-        
+
         // Fallback: usar fetch directo
         const response = await fetch(`${URL_VIDEOS}/${videoId}`, {
           method: 'DELETE',
@@ -151,14 +151,14 @@ function deleteVideo(videoId, buttonElement) {
         if (response.ok) {
           // Eliminar el video del array local
           cachedVideos = cachedVideos.filter(v => v.id_video !== videoId);
-          
+
           // Eliminar el elemento del DOM
           const videoCard = buttonElement.closest('.col-12');
           if (videoCard) {
             videoCard.remove();
             console.log('✅ Video eliminado del DOM (fetch)');
           }
-          
+
           // Mostrar mensaje de éxito
           showNotification('Video eliminado correctamente', 'success');
         } else {
@@ -167,7 +167,7 @@ function deleteVideo(videoId, buttonElement) {
           throw new Error(`Error ${response.status}: ${response.statusText}`);
         }
       }
-      
+
     } catch (error) {
       console.error('❌ Error eliminando video:', error);
       showNotification(`Error al eliminar el video: ${error.message}`, 'error');
@@ -190,9 +190,9 @@ function showNotification(message, type = 'info') {
   notification.className = `alert alert-${type === 'success' ? 'success' : 'danger'} position-fixed`;
   notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
   notification.innerHTML = message;
-  
+
   document.body.appendChild(notification);
-  
+
   // Remover después de 3 segundos
   setTimeout(() => {
     if (notification.parentNode) {
