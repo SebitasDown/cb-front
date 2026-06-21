@@ -1,6 +1,6 @@
 import { get, post, deletes, update } from "../../service/api.js";
 
-const BASE_URL = "http://localhost:3001/comment";
+const BASE_URL = "https://cb-back-prueba-c2e1a4ci8-sebitasdowns-projects.vercel.app/comment";
 
 export async function getComments(id_video) {
   const url = `${BASE_URL}?id_video=${id_video}`;

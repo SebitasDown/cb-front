@@ -1,7 +1,7 @@
 import { navigate } from "../../router/router.js";
 import { post } from "../../service/api.js";
 
-const API_URL = "http://localhost:3001/auth";
+const API_URL = "https://cb-back-prueba-c2e1a4ci8-sebitasdowns-projects.vercel.app/auth";
 
 export function LoginUser() {
   const loginForm = document.getElementById("login-form");
@@ -318,7 +318,7 @@ export function LoginUser() {
 }
 
 // --- GLOBAL LOGOUT (funciona desde cualquier página) ---
-window.handleLogout = function() {
+window.handleLogout = function () {
   localStorage.removeItem("user");
   import("../../router/router.js").then(mod => mod.navigate("/login"));
 };

@@ -1,7 +1,7 @@
 import { navigate } from "../../router/router.js";
 import { get } from "../../service/api.js";
 
-const API_BASE = "http://localhost:3001";
+const API_BASE = "https://cb-back-prueba-c2e1a4ci8-sebitasdowns-projects.vercel.app";
 
 export function initVideoUpload() {
   const uploadPanel = document.getElementById('uploadPanel');

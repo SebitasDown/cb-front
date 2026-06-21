@@ -1,7 +1,7 @@
 import { navigate } from "../../router/router.js";
 import { post } from "../../service/api.js";
 
-const API_URL = "http://localhost:3001/auth";
+const API_URL = "https://cb-back-prueba-c2e1a4ci8-sebitasdowns-projects.vercel.app/auth";
 
 export function initResetPassword() {
   const form = document.getElementById("reset-form");
