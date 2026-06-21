@@ -1,11 +1,13 @@
 import { routes } from './routes.js';
 import { LoginUser } from '../features/auth/login.js';
+import { initResetPassword } from '../features/auth/reset-password.js';
 import { homeUsers } from '../features/home/home.js';
 import { initWorkshop } from '../features/workshops/workshops.js';
 import { initVideoPlayer } from '../features/videos/video.js';
 import { initVideoUpload } from '../features/upload/uploadVideos.js';
 
 const protectedRoutes = ['/home', '/videos', '/workshop'];
+const authRoutes = ['/', '/login', '/reset-password'];
 
 export async function navigate(path) {
   console.log('Router: navigate() called with path:', path);
@@ -44,7 +46,7 @@ function handleSidebarVisibility(path) {
   const mainContent = document.getElementById('main-content');
   const appContent = document.getElementById('app-content');
 
-  if (path === '/' || path === '/login') {
+  if (authRoutes.includes(path)) {
     sidebar?.classList.add('hidden');
     mainContent?.classList.add('full-width');
     appContent?.classList.add('login-fullscreen');
@@ -63,14 +65,18 @@ function runPageScript(path) {
       LoginUser();
       break;
 
+    case '/reset-password':
+      console.log('Initializing ResetPassword...');
+      initResetPassword();
+      break;
+
     case '/home':
       console.log('Initializing Home...');
       homeUsers();
       break;
 
     case '/uploadVideos':
-      console.log('Initializing Home...');
-      initVideoUpload();
+      // El panel de upload es global, ya fue inicializado en main.js
       break;
 
     case '/videos':
@@ -80,16 +86,15 @@ function runPageScript(path) {
         import('../features/comments/main.js').then(module => {
           module.initComments();
         });
-        // Inicializar el chat
         import('../features/chat/chat.js').then(module => {
           module.initChat();
         });
-      }, 100); // Esperar a que el HTML se inserte
+      }, 100);
       break;
 
     case '/workshop':
       console.log('Initializing Workshop...');
-      setTimeout(() => initWorkshop(), 0); // Espera a que el HTML se inserte
+      setTimeout(() => initWorkshop(), 0);
       break;
 
     default:
@@ -101,7 +106,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const user = JSON.parse(localStorage.getItem("user"));
   const currentPath = window.location.pathname;
 
-  if ((currentPath === "/" || currentPath === "/login") && user) {
+  if (authRoutes.includes(currentPath) && user && currentPath !== '/reset-password') {
     console.log("User detected, redirecting to /home");
     return navigate("/home");
   }

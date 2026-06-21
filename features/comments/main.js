@@ -1,5 +1,5 @@
 // Sistema de comentarios optimizado y robusto
-import { getComments, createComment, updateComment, deleteComment } from './comments.js';
+import { getComments, createComment, updateComment, deleteComment, toggleLike } from './comments.js';
 
 // Variables globales
 let currentVideoId = null;
@@ -46,19 +46,10 @@ function initCommentsInternal() {
     return;
   }
   
-  // Verificar si cambió el video
-  if (lastVideoId !== currentVideoId) {
-    console.log(`🔄 Video cambiado de ${lastVideoId} a ${currentVideoId}, reinicializando...`);
-    isInitialized = false;
-    lastVideoId = currentVideoId;
-    retryCount = 0; // Reset retry count for new video
-  }
-  
-  // Evitar inicializaciones múltiples para el mismo video
-  if (isInitialized) {
-    console.log('⚠️ Sistema de comentarios ya inicializado para este video, saltando...');
-    return;
-  }
+  // Resetear siempre al navegar a la página (el router recrea el DOM)
+  isInitialized = false;
+  lastVideoId = currentVideoId;
+  retryCount = 0;
   
   console.log('🎯 Inicializando sistema de comentarios para video:', currentVideoId);
   
@@ -263,32 +254,68 @@ function createCommentElement(comment) {
   div.innerHTML = `
     <div class="d-flex align-items-start gap-3">
       <div class="flex-shrink-0">
-        <div class="avatar bg-primary rounded-circle d-flex align-items-center justify-content-center text-white" style="width: 40px; height: 40px;">
+        <div class="avatar rounded-circle d-flex align-items-center justify-content-center text-white" style="width: 40px; height: 40px; background: teal;">
           ${comment.nickname ? comment.nickname.charAt(0).toUpperCase() : 'U'}
         </div>
       </div>
       <div class="flex-grow-1">
         <div class="d-flex align-items-center gap-2 mb-1">
           <strong class="nombre">${comment.nickname || 'Usuario'}</strong>
-          <small class="text-muted">${formatDate(comment.timestamp || comment.comment_date || comment.created_at)}</small>
+          <small class="text-muted">${formatDate(comment.comment_date)}</small>
         </div>
-        <p class="texto mb-2">${comment.comments}</p>
-        ${comment.id_user == currentUserId ? `
-          <div class="comment-actions">
-            <button class="btn btn-edit" onclick="editComment(${comment.id_comment}, this)" title="Editar comentario">
-              <i class="fas fa-edit"></i>
+        <p class="texto mb-2" id="comment-text-${comment.id_comment}">${comment.comments}</p>
+        <div class="d-flex align-items-center gap-3">
+          <button class="btn btn-sm btn-like ${comment.userLiked ? 'liked' : ''}" data-comment-id="${comment.id_comment}" onclick="handleLike(${comment.id_comment}, ${currentUserId})">
+            <i class="bi bi-hand-thumbs-up${comment.userLiked ? '-fill' : ''}"></i>
+            <span id="like-count-${comment.id_comment}">${comment.likes_count || 0}</span>
+          </button>
+          <button class="btn btn-sm btn-reply" onclick="replyToComment(${comment.id_comment}, '${comment.nickname || 'Usuario'}')">
+            <i class="bi bi-reply"></i> Reply
+          </button>
+          ${comment.id_user == currentUserId ? `
+            <button class="btn btn-sm btn-outline-secondary" onclick="editComment(${comment.id_comment}, this)" title="Editar">
+              <i class="bi bi-pencil"></i>
             </button>
-            <button class="btn btn-delete" onclick="deleteComment(${comment.id_comment}, this)" title="Eliminar comentario">
-              <i class="fas fa-trash"></i>
+            <button class="btn btn-sm btn-outline-danger" onclick="deleteComment(${comment.id_comment}, this)" title="Eliminar">
+              <i class="bi bi-trash"></i>
             </button>
-          </div>
-        ` : ''}
+          ` : ''}
+        </div>
       </div>
     </div>
   `;
-  
+
   return div;
 }
+
+// --- GLOBAL HANDLERS FOR INLINE ONCLICK ---
+window.handleLike = async function(id_comment, id_user) {
+  try {
+    const result = await toggleLike(id_comment, id_user);
+    const btn = document.querySelector(`[data-comment-id="${id_comment}"]`);
+    const icon = btn?.querySelector('i');
+    const countSpan = document.getElementById(`like-count-${id_comment}`);
+    if (result.liked) {
+      btn?.classList.add('liked');
+      if (icon) icon.className = 'bi bi-hand-thumbs-up-fill';
+      if (countSpan) countSpan.textContent = parseInt(countSpan.textContent) + 1;
+    } else {
+      btn?.classList.remove('liked');
+      if (icon) icon.className = 'bi bi-hand-thumbs-up';
+      if (countSpan) countSpan.textContent = Math.max(0, parseInt(countSpan.textContent) - 1);
+    }
+  } catch (error) {
+    console.error('Error toggling like:', error);
+  }
+};
+
+window.replyToComment = function(id_comment, nickname) {
+  const textarea = document.getElementById('nuevoComentario');
+  if (textarea) {
+    textarea.value = `@${nickname} `;
+    textarea.focus();
+  }
+};
 
 // Formatear fecha
 function formatDate(dateString) {
@@ -389,8 +416,8 @@ window.editComment = function(commentId, button) {
   textElement.parentNode.replaceChild(textarea, textElement);
   
   // Cambiar botón
-  button.innerHTML = '<i class="fas fa-save"></i>';
-  button.className = 'btn btn-edit';
+  button.innerHTML = '<i class="bi bi-check-lg"></i>';
+  button.className = 'btn btn-sm btn-success';
   button.title = 'Guardar cambios';
   
   // Focus en textarea
@@ -425,8 +452,8 @@ window.saveCommentEdit = async function(commentId, button, textarea, originalTex
     textarea.parentNode.replaceChild(textElement, textarea);
     
     // Restaurar botón
-    button.innerHTML = '<i class="fas fa-edit"></i>';
-    button.className = 'btn btn-edit';
+    button.innerHTML = '<i class="bi bi-pencil"></i>';
+    button.className = 'btn btn-sm btn-outline-secondary';
     button.title = 'Editar comentario';
     button.onclick = () => editComment(commentId, button);
     
@@ -443,8 +470,8 @@ window.saveCommentEdit = async function(commentId, button, textarea, originalTex
     textarea.parentNode.replaceChild(textElement, textarea);
     
     // Restaurar botón
-    button.innerHTML = '<i class="fas fa-edit"></i>';
-    button.className = 'btn btn-edit';
+    button.innerHTML = '<i class="bi bi-pencil"></i>';
+    button.className = 'btn btn-sm btn-outline-secondary';
     button.title = 'Editar comentario';
     button.onclick = () => editComment(commentId, button);
   }
@@ -457,7 +484,7 @@ window.deleteComment = async function(commentId, button) {
   }
   
   try {
-    await deleteComment(commentId);
+    await deleteComment(commentId, currentUserId);
     
     // Remover del DOM
     const commentDiv = button.closest('.comentario');

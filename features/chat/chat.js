@@ -1,10 +1,23 @@
 import { post } from "../../service/api.js";
 
-const API_BASE = "https://cb-back-prueba.vercel.app";
+const API_BASE = "http://localhost:3001";
 const CHAT_ENDPOINT = `${API_BASE}/chat`;
+
+let currentSessionId = null;
+
+function getCurrentUser() {
+  try {
+    const data = localStorage.getItem('user');
+    return data ? JSON.parse(data) : null;
+  } catch {
+    return null;
+  }
+}
 
 export function initChat() {
   console.log('🚀 Inicializando chat...');
+
+  currentSessionId = null;
 
   const messagesContainer = document.getElementById('messages');
   const input = document.getElementById('input');
@@ -25,6 +38,7 @@ export function initChat() {
 
   // Función para limpiar el chat cuando cambie el video
   function clearChat() {
+    currentSessionId = null;
     messagesContainer.innerHTML = '';
     addMessage('¡Hola! Soy tu asistente de IA especializado en desarrollo de software. ¿En qué puedo ayudarte con este video?', 'bot');
     // Asegurar scroll al final después de limpiar
@@ -173,13 +187,21 @@ export function initChat() {
       console.log('🎥 Video ID:', videoID);
       console.log('🎬 Video actual:', currentVideo);
 
-      // Enviar mensaje al backend según tu API
+      const user = getCurrentUser();
+      const userId = user ? user.id_user : null;
+
       const response = await post(CHAT_ENDPOINT, {
         ask: message,
-        videoID: videoID
+        videoID: videoID,
+        userId: userId,
+        sessionId: currentSessionId
       });
 
       console.log('✅ Respuesta del backend:', response);
+
+      if (response.sessionId) {
+        currentSessionId = response.sessionId;
+      }
 
       // Remover indicador de escritura
       messagesContainer.removeChild(typingIndicator);

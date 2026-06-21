@@ -3,23 +3,125 @@
       <img src="../assets/images/LogolargoCoderBoost.png" alt="CoderBooster Logo">
     </div>
 
+    <div class="right" id="right-container">
 
- <div class="right">
-<form class="form-container" id="login-form">
-  <h2>Login</h2>
+      <!-- Login Form -->
+      <form class="form-container" id="login-form">
+        <h2>Login</h2>
 
-  <div class="input-group">
-    <input type="email" id="email" placeholder="Email" required>
-    <i class="fa-solid fa-envelope icon"></i>
-  </div>
+        <div class="input-group">
+          <input type="email" id="email" placeholder="Email" required>
+          <i class="fa-solid fa-envelope icon"></i>
+        </div>
 
-  <div class="input-group">
-    <input type="password" id="password" placeholder="Password" required>
-    <i class="fa-solid fa-lock icon"></i>
-  </div>
+        <div class="input-group">
+          <input type="password" id="password" placeholder="Password" required>
+          <i class="fa-solid fa-lock icon"></i>
+        </div>
 
-  <button type="submit" id="login-btn">Login</button>
-</form>
+        <div id="login-error" class="error-message hidden"></div>
 
+        <button type="submit" id="login-btn">Login</button>
+        <a href="#" id="forgot-link" class="forgot-link">Forgot password?</a>
+      </form>
 
-  </div>
+      <!-- Register Form -->
+      <form class="form-container hidden" id="register-form">
+        <h2>Create Account</h2>
+
+        <div class="input-group">
+          <input type="text" id="reg-fullname" placeholder="Full Name" required>
+          <i class="fa-solid fa-user icon"></i>
+        </div>
+
+        <div class="input-group">
+          <input type="text" id="reg-nickname" placeholder="Nickname">
+          <i class="fa-solid fa-at icon"></i>
+        </div>
+
+        <div class="input-group">
+          <input type="email" id="reg-email" placeholder="Email" required>
+          <i class="fa-solid fa-envelope icon"></i>
+        </div>
+
+        <div class="input-group">
+          <input type="password" id="reg-password" placeholder="Password" required>
+          <i class="fa-solid fa-lock icon"></i>
+        </div>
+
+        <div id="register-error" class="error-message hidden"></div>
+
+        <button type="submit" id="register-btn">Create Account</button>
+      </form>
+
+      <!-- Forgot Password Form -->
+      <div class="form-container hidden" id="forgot-form">
+        <h2>Reset Password</h2>
+        <p class="form-subtitle">Enter your email to receive a verification code</p>
+
+        <div class="input-group">
+          <input type="email" id="forgot-email" placeholder="Email" required>
+          <i class="fa-solid fa-envelope icon"></i>
+        </div>
+
+        <div id="forgot-error" class="error-message hidden"></div>
+
+        <button type="button" id="forgot-btn">Send Code</button>
+        <a href="#" id="back-to-login-from-forgot" class="forgot-link">Back to Login</a>
+      </div>
+
+      <!-- OTP Verification -->
+      <div class="form-container hidden" id="otp-form">
+        <h2>Verify your email</h2>
+        <p class="form-subtitle">We sent a verification code to <strong id="otp-email-display"></strong></p>
+
+        <div class="otp-inputs">
+          <input type="text" class="otp-input" maxlength="1" inputmode="numeric" pattern="[0-9]">
+          <input type="text" class="otp-input" maxlength="1" inputmode="numeric" pattern="[0-9]">
+          <input type="text" class="otp-input" maxlength="1" inputmode="numeric" pattern="[0-9]">
+          <span class="otp-separator"></span>
+          <input type="text" class="otp-input" maxlength="1" inputmode="numeric" pattern="[0-9]">
+          <input type="text" class="otp-input" maxlength="1" inputmode="numeric" pattern="[0-9]">
+          <input type="text" class="otp-input" maxlength="1" inputmode="numeric" pattern="[0-9]">
+        </div>
+
+        <div class="otp-timer" id="otp-timer">
+          <span id="otp-timer-text">Resend code in 00:45</span>
+        </div>
+
+        <div id="otp-error" class="error-message hidden"></div>
+        <div id="otp-success" class="success-message hidden"></div>
+
+        <button type="button" id="otp-btn">Verify Code</button>
+        <a href="#" id="otp-wrong-email" class="forgot-link">Wrong email?</a>
+      </div>
+
+      <!-- New Password Form -->
+      <div class="form-container hidden" id="new-password-form">
+        <h2>Create new password</h2>
+        <p class="form-subtitle">Enter your new password</p>
+
+        <div class="input-group">
+          <input type="password" id="new-password" placeholder="New password" required>
+          <i class="fa-solid fa-lock icon"></i>
+        </div>
+
+        <div class="input-group">
+          <input type="password" id="new-password-confirm" placeholder="Confirm password" required>
+          <i class="fa-solid fa-check icon"></i>
+        </div>
+
+        <div id="new-password-error" class="error-message hidden"></div>
+        <div id="new-password-success" class="success-message hidden"></div>
+
+        <button type="button" id="new-password-btn">Update Password</button>
+        <a href="#" id="back-to-login-from-newpass" class="forgot-link">Back to Login</a>
+      </div>
+
+      <!-- Tab Switch -->
+      <p class="switch-text" id="switch-text">
+        <span id="switch-question">Don't have an account?</span>
+        <a href="#" id="switch-link">Register</a>
+      </p>
+    </div>
+</div>

@@ -1,7 +1,7 @@
 import { navigate } from "../../router/router.js";
 import { get } from "../../service/api.js";
 
-const API_BASE = "https://cb-back-prueba.vercel.app";
+const API_BASE = "http://localhost:3001";
 
 export function initVideoUpload() {
   const uploadPanel = document.getElementById('uploadPanel');
@@ -141,6 +141,54 @@ export function initVideoUpload() {
     });
   }
 
+  // Helper to slice and upload to Cloudinary in chunks
+  async function uploadLargeFileToCloudinary(file, signature, timestamp, cloudName, apiKey, onProgress) {
+    const chunkSize = 5 * 1024 * 1024; // 5MB chunk size
+    const totalChunks = Math.ceil(file.size / chunkSize);
+    const uniqueUploadId = Math.random().toString(36).substring(2, 15);
+
+    let result = null;
+
+    for (let chunkIndex = 0; chunkIndex < totalChunks; chunkIndex++) {
+      const start = chunkIndex * chunkSize;
+      const end = Math.min(start + chunkSize, file.size);
+      const chunk = file.slice(start, end);
+
+      const formData = new FormData();
+      formData.append('file', chunk);
+      formData.append('timestamp', timestamp);
+      formData.append('api_key', apiKey);
+      formData.append('signature', signature);
+      formData.append('folder', 'videos');
+
+      const contentRange = `bytes ${start}-${end - 1}/${file.size}`;
+
+      const percent = Math.round((chunkIndex / totalChunks) * 100);
+      if (onProgress) onProgress(percent, chunkIndex + 1, totalChunks);
+
+      const response = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/video/upload`, {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'X-Unique-Upload-Id': uniqueUploadId,
+          'Content-Range': contentRange
+        }
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Cloudinary chunk upload failed at chunk ${chunkIndex + 1}/${totalChunks}: ${errorText}`);
+      }
+
+      if (chunkIndex === totalChunks - 1) {
+        result = await response.json();
+      }
+    }
+
+    if (onProgress) onProgress(100, totalChunks, totalChunks);
+    return result;
+  }
+
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
@@ -148,7 +196,7 @@ export function initVideoUpload() {
       // Cambiar estado del botón
       submitBtn.disabled = true;
       submitBtn.classList.add('loading');
-      submitBtnText.textContent = '⏳ Processing...';
+      submitBtnText.textContent = '⏳ Fetching signature...';
 
       const fileInput = document.getElementById('videoFile');
       const titleInput = document.getElementById('title');
@@ -163,26 +211,62 @@ export function initVideoUpload() {
         return;
       }
 
-      const formData = new FormData();
-      formData.append('file', fileInput.files[0]);
-      formData.append('title', titleInput.value);
-      formData.append('id_user', userId);
-      formData.append('id_category', categoryId);
+      const file = fileInput.files[0];
+      if (!file) {
+        alert('Please select a video file');
+        return;
+      }
 
-      console.log('🚀 Enviando video al backend...');
+      // 1. Obtener firma y timestamp desde el backend
+      console.log('🔑 Obteniendo firma de subida del backend...');
+      const sigRes = await fetch(`${API_BASE}/videos/upload-signature`);
+      if (!sigRes.ok) {
+        throw new Error(`Error al obtener firma de subida: ${sigRes.statusText}`);
+      }
+      const { signature, timestamp, cloud_name, api_key } = await sigRes.json();
 
-      // Usar fetch directamente para FormData
+      // 2. Subir directamente a Cloudinary en fragmentos
+      console.log(`🚀 Iniciando subida directa a Cloudinary: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)`);
+      const cloudinaryResult = await uploadLargeFileToCloudinary(
+        file,
+        signature,
+        timestamp,
+        cloud_name,
+        api_key,
+        (percent, chunkNum, totalChunks) => {
+          submitBtnText.textContent = `⏳ Uploading... ${percent}% (Parte ${chunkNum}/${totalChunks})`;
+        }
+      );
+
+      console.log('✅ Subida exitosa a Cloudinary:', cloudinaryResult);
+
+      // 3. Registrar en backend enviando metadata
+      submitBtnText.textContent = '⏳ Processing transcription...';
+      const payload = {
+        title: titleInput.value,
+        id_user: userId,
+        id_category: categoryId,
+        url: cloudinaryResult.secure_url,
+        public_id: cloudinaryResult.public_id,
+        duration: cloudinaryResult.duration
+      };
+
+      console.log('📡 Registrando video en base de datos y transcribiendo...', payload);
       const response = await fetch(`${API_BASE}/videos/create`, {
         method: 'POST',
-        body: formData
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
       });
 
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        const errorText = await response.text();
+        throw new Error(`Error del backend al procesar video: ${errorText}`);
       }
 
       const res = await response.json();
-      console.log('✅ Respuesta del backend:', res);
+      console.log('✅ Video procesado y guardado:', res);
 
       // Mostrar animación de éxito
       uploadPanel.classList.add('success');
@@ -210,7 +294,7 @@ export function initVideoUpload() {
       submitBtn.classList.remove('loading');
       submitBtnText.textContent = 'Upload Video';
 
-      alert('Error uploading video. Please try again.');
+      alert('Error uploading video: ' + error.message);
     }
   });
 
@@ -266,9 +350,3 @@ export function initVideoUpload() {
 
   console.log('✅ Sistema de upload con preview de miniatura inicializado completamente');
 }
-
-// Inicializar automáticamente cuando se carga la página
-document.addEventListener('DOMContentLoaded', () => {
-  console.log('🚀 DOM cargado, inicializando upload...');
-  initVideoUpload();
-});

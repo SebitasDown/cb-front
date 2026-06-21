@@ -48,11 +48,14 @@ export async function update(url, body) {
   }
 }
 
-export async function deletes(url) {
+export async function deletes(url, body) {
   try {
-    const response = await fetch(url, {
-      method: "DELETE"
-    });
+    const options = { method: "DELETE" };
+    if (body) {
+      options.headers = { "Content-Type": "application/json" };
+      options.body = JSON.stringify(body);
+    }
+    const response = await fetch(url, options);
 
     if (response.ok) {
       console.log("DELETE: recurso eliminado correctamente");

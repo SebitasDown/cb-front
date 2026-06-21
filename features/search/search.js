@@ -1,7 +1,7 @@
 import { get, post, update, deletes } from "../../service/api";
 import { navigate } from "../../router/router.js";
-const urlSearch = "https://cb-back-prueba.vercel.app/search";
-const urlVideos = "https://cb-back-prueba.vercel.app/videos";
+const urlSearch = "http://localhost:3001/search";
+const urlVideos = "http://localhost:3001/videos";
 
 function getThumbnailUrl(item) {
   if (item && (item.thumbnail || item.poster)) return item.thumbnail || item.poster;

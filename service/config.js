@@ -1,6 +1,6 @@
 // Configuración centralizada de la aplicación
 export const API_CONFIG = {
-  BASE_URL: "https://cb-back-prueba.vercel.app",
+  BASE_URL: "http://localhost:3001",
   ENDPOINTS: {
     AUTH: "/auth",
     VIDEOS: "/videos",
