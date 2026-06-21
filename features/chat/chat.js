@@ -1,6 +1,6 @@
 import { post } from "../../service/api.js";
 
-const API_BASE = "https://cb-back-prueba-c2e1a4ci8-sebitasdowns-projects.vercel.app";
+const API_BASE = "https://cb-back-prueba.vercel.app";
 const CHAT_ENDPOINT = `${API_BASE}/chat`;
 
 let currentSessionId = null;

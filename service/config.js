@@ -1,6 +1,6 @@
 // Configuración centralizada de la aplicación
 export const API_CONFIG = {
-  BASE_URL: "https://cb-back-prueba-c2e1a4ci8-sebitasdowns-projects.vercel.app",
+  BASE_URL: "https://cb-back-prueba.vercel.app",
   ENDPOINTS: {
     AUTH: "/auth",
     VIDEOS: "/videos",
